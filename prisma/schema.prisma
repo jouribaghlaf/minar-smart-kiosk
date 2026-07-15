@@ -1,0 +1,314 @@
+// Minar Smart Kiosk — Prisma schema
+//
+// Every entity listed under "Mock Data" in PROJECT_REQUIREMENTS.md (Pilgrim,
+// Campaign, Camp, Supervisor, Health Centers, Train Stations, Crowd Levels,
+// Emergency Contacts, Weather, Notifications, Healthcare Information) is
+// modeled here and seeded with realistic data in prisma/seed.ts — so "mock
+// data" means real rows in Postgres, not static JSON fixtures. This keeps a
+// straight line to production: swapping a seed source for a live government
+// feed later is a data change, not a schema or code change.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Identity & campaign structure
+// ---------------------------------------------------------------------------
+
+enum IdentificationMethod {
+  FACE_RECOGNITION
+  NUSUK_CARD
+  QR_CODE
+  PASSPORT
+  NATIONAL_ID
+}
+
+enum SystemLanguage {
+  AR
+  EN
+}
+
+model Pilgrim {
+  id                 String               @id @default(cuid())
+  name               String
+  nationality        String
+  nationalityFlag     String? // ISO country code, used to render a flag icon
+  systemLanguage     SystemLanguage       @default(AR)
+  pilgrimNumber      String               @unique
+  arrivalDateHijri   String
+  arrivalDateGregorian DateTime
+  avatarUrl          String?
+
+  // The credential used the last time this pilgrim identified at a kiosk.
+  lastVerificationMethod IdentificationMethod?
+
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+
+  campId String
+  camp   Camp   @relation(fields: [campId], references: [id])
+
+  healthInfo   HealthInfo?
+  sessions     Session[]
+  chatMessages ChatMessage[]
+  reports      Report[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([campaignId])
+  @@index([campId])
+}
+
+model Campaign {
+  id             String   @id @default(cuid())
+  name           String
+  campaignNumber String   @unique
+
+  supervisorId String
+  supervisor   Supervisor @relation(fields: [supervisorId], references: [id])
+
+  pilgrims Pilgrim[]
+
+  createdAt DateTime @default(now())
+}
+
+model Camp {
+  id       String @id @default(cuid())
+  number   String @unique
+  location String // e.g. "منطقة العزيزية - شارع 204"
+
+  pilgrims Pilgrim[]
+
+  createdAt DateTime @default(now())
+}
+
+model Supervisor {
+  id    String @id @default(cuid())
+  name  String
+  phone String
+
+  campaigns Campaign[]
+
+  createdAt DateTime @default(now())
+}
+
+// A kiosk-issued session created after a successful identification. Not a
+// classic username/password login — mirrors Screen 02's flow (face scan /
+// Nusuk card / QR / passport / national ID) rather than a login form.
+model Session {
+  id        String   @id @default(cuid())
+  pilgrimId String
+  pilgrim   Pilgrim  @relation(fields: [pilgrimId], references: [id])
+
+  identificationMethod IdentificationMethod
+
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([pilgrimId])
+}
+
+// ---------------------------------------------------------------------------
+// Smart Navigation & Crowd Management (Screen 04)
+// ---------------------------------------------------------------------------
+
+enum CrowdLevelLabel {
+  EXCELLENT // ممتاز
+  GOOD
+  MODERATE // متوسط
+  BUSY // مزدحم
+  VERY_BUSY // مزدحم جدا
+}
+
+enum DestinationType {
+  TAWAF
+  SAI
+  CAMP
+  RESTROOM
+  HEALTH_CENTER
+}
+
+// One row per selectable "level" or lane within a destination (e.g. floor
+// levels of the Tawaf area: صحن المطاف / الدور الأرضي / الدور الأول / الدور الثاني).
+model CrowdLevel {
+  id              String          @id @default(cuid())
+  destination     DestinationType
+  levelName       String // e.g. "الدور الأول"
+  levelOrder      Int // for stable display ordering
+  crowdLabel      CrowdLevelLabel
+  waitMinutes     Int
+  isRecommended   Boolean         @default(false)
+  recommendedGate String?
+
+  updatedAt DateTime @updatedAt
+
+  @@index([destination])
+}
+
+model HealthCenter {
+  id             String   @id @default(cuid())
+  name           String
+  latitude       Float
+  longitude      Float
+  distanceMeters Int
+  etaMinutes     Int
+  isAvailable    Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+}
+
+model TrainStation {
+  id             String @id @default(cuid())
+  name           String
+  distanceMeters Int
+  etaMinutes     Int
+
+  createdAt DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Healthcare (Screen 06)
+// ---------------------------------------------------------------------------
+
+model HealthInfo {
+  id                 String  @id @default(cuid())
+  pilgrimId          String  @unique
+  pilgrim            Pilgrim @relation(fields: [pilgrimId], references: [id])
+
+  bloodType          String
+  allergies          String? // "لا يوجد" when none
+  chronicDiseases    String?
+  currentMedications String?
+  emergencyContact   String
+
+  updatedAt DateTime @updatedAt
+}
+
+model EmergencyContact {
+  id     String @id @default(cuid())
+  label  String // e.g. "الهلال الأحمر", "إسعاف", "الطوارئ العامة"
+  number String
+  order  Int    @default(0)
+}
+
+model HealthTip {
+  id    String @id @default(cuid())
+  text  String
+  icon  String // lucide icon name
+  order Int    @default(0)
+}
+
+// ---------------------------------------------------------------------------
+// AI Assistant (Screen 05 drawer)
+// ---------------------------------------------------------------------------
+
+enum ChatSender {
+  USER
+  ASSISTANT
+}
+
+model ChatMessage {
+  id        String     @id @default(cuid())
+  sessionId String // groups a conversation; ties to Session.id when authenticated, or an anonymous UUID otherwise
+  pilgrimId String?
+  pilgrim   Pilgrim?   @relation(fields: [pilgrimId], references: [id])
+
+  sender    ChatSender
+  text      String
+  language  SystemLanguage @default(AR)
+
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+}
+
+model SuggestedPrompt {
+  id       String @id @default(cuid())
+  textAr   String
+  textEn   String
+  icon     String
+  order    Int    @default(0)
+}
+
+// ---------------------------------------------------------------------------
+// Reports / "البلاغات الذكية" (referenced across both docs)
+// ---------------------------------------------------------------------------
+
+enum ReportType {
+  LOST_PILGRIM
+  LOST_ITEM
+  MEDICAL_EMERGENCY
+  FIELD_ASSISTANCE
+  SECURITY
+}
+
+enum ReportStatus {
+  SUBMITTED
+  IN_PROGRESS
+  RESOLVED
+}
+
+model Report {
+  id        String       @id @default(cuid())
+  pilgrimId String?
+  pilgrim   Pilgrim?     @relation(fields: [pilgrimId], references: [id])
+  type      ReportType
+  status    ReportStatus @default(SUBMITTED)
+  notes     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Environmental / general information (weather, air quality, alerts)
+// ---------------------------------------------------------------------------
+
+model EnvironmentStatus {
+  id             String   @id @default(cuid())
+  temperatureC   Int
+  weatherIcon    String // lucide icon name, e.g. "sun", "cloud"
+  airQualityAqi  Int
+  airQualityLabel String // e.g. "جيدة"
+  overallCrowd   CrowdLevelLabel
+
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  titleAr   String
+  titleEn   String
+  bodyAr    String
+  bodyEn    String
+  icon      String
+  isRead    Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Accessibility (Screen 07 drawer) — per-session persistence
+// ---------------------------------------------------------------------------
+
+model AccessibilityProfile {
+  id                  String  @id @default(cuid())
+  sessionId           String  @unique
+  fontScale           Float   @default(1.0)
+  highContrast        Boolean @default(false)
+  colorBlindMode      Boolean @default(false)
+  largeButtons        Boolean @default(false)
+  textToSpeech        Boolean @default(false)
+  voiceCommands       Boolean @default(false)
+  reducedMotion       Boolean @default(false)
+  wheelchairMode      Boolean @default(false)
+
+  updatedAt DateTime @updatedAt
+}

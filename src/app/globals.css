@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+ * Kiosk baseline
+ * -------------------------------------------------------------------------
+ * The root font size is intentionally larger than a typical website's 16px
+ * default, since the primary target is a touchscreen kiosk viewed from
+ * arm's length in a bright outdoor environment. --a11y-font-scale is set by
+ * AccessibilityContext (Increase/Decrease Font) and multiplies on top of
+ * this baseline, so every rem-based size in the app scales uniformly.
+ * ------------------------------------------------------------------------- */
+:root {
+  --a11y-font-scale: 1;
+  --kiosk-base-px: 18px;
+}
+
+html {
+  font-size: calc(var(--kiosk-base-px) * var(--a11y-font-scale));
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-cream-100 text-ink-900 font-arabic antialiased;
+  min-height: 100dvh;
+}
+
+html[dir="ltr"] body {
+  @apply font-latin;
+}
+
+/* Minimum touch target size everywhere, per kiosk requirements. Buttons/
+   links can opt out with `data-touch-exempt` for genuinely inline text
+   actions (rare). */
+button,
+a[role="button"],
+[data-touch-target] {
+  min-height: 3rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Accessibility modes — applied on <html> by AccessibilityContext
+ * ------------------------------------------------------------------------- */
+
+/* High contrast: stronger text/background contrast + visible borders. */
+.a11y-high-contrast {
+  --tw-text-opacity: 1;
+}
+.a11y-high-contrast body {
+  @apply bg-white text-black;
+}
+.a11y-high-contrast .card-surface {
+  @apply border-2 border-black shadow-none;
+}
+
+/* Large buttons: bump every touch target further beyond the kiosk baseline. */
+.a11y-large-buttons button,
+.a11y-large-buttons a[role="button"],
+.a11y-large-buttons [data-touch-target] {
+  min-height: 4.5rem;
+  font-size: 1.15em;
+}
+
+/* Reduced motion: disable non-essential animation/transition globally. */
+.a11y-reduced-motion,
+.a11y-reduced-motion * {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Wheelchair mode: keep primary actions within a lower, easier-to-reach
+   band of the screen. Components opt in via the `wheelchair:` variant
+   through the [data-wheelchair-mode] attribute set alongside the class. */
+.a11y-wheelchair-mode [data-primary-actions] {
+  @apply mb-6;
+}
+
+/* Color-blind-friendly mode: swap the red/green crowd & status indicators
+   for a blue/orange pair with added icons/patterns handled at the
+   component level (StatusBadge reads this class via useAccessibility). */
+.a11y-color-blind {
+  --status-good-color: #2563eb;
+  --status-bad-color: #d97706;
+}
+
+/* ---------------------------------------------------------------------------
+ * Focus visibility — never removed, even in kiosk touch mode, since a
+ * keyboard/switch-access user may still be present.
+ * ------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 3px solid theme("colors.gold.500");
+  outline-offset: 2px;
+}
+
+/* Scrollbar tuned to feel intentional on a large touch display rather than
+   like a stray desktop-browser artifact. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-brand-100 rounded-pill;
+}
