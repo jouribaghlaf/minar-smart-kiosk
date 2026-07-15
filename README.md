@@ -1,81 +1,86 @@
-# Minar — Smart AI Kiosk for Pilgrims
+# مِنار — جهاز الخدمة الذاتية الذكي لضيوف الرحمن
 
-Production-quality interactive web application simulating the Minar Smart
-Kiosk, built with Next.js 15 (App Router), Prisma + PostgreSQL, and
-Tailwind CSS. See `PROJECT_REQUIREMENTS.md` (provided separately) for the
-full spec this implementation follows.
+**مِنار** نموذج تجريبي لمنصة خدمة ذاتية ذكية صُممت لمساعدة ضيوف الرحمن وتسهيل وصولهم إلى الخدمات والمعلومات بلغتهم، من خلال واجهة واضحة ومناسبة لشاشات اللمس ومساعد ذكي متاح في جميع الصفحات.
 
-## Stack
+> المشروع حاليًا نموذج تجريبي (Prototype)، وتعمل بياناته وتكاملاته من خلال Mock Data دون اتصال بأنظمة حكومية حقيقية.
 
-- Next.js 15 (App Router) + React 19 + TypeScript
-- Tailwind CSS (kiosk-optimized design tokens — see `tailwind.config.ts`)
-- Prisma ORM + PostgreSQL
-- Framer Motion, Lucide React
-- Next.js API Routes as the backend layer (no separate server)
+## أبرز المزايا
 
-## Getting started
+- واجهة ترحيبية واختيار لغة قابل للبحث مع دعم اتجاهي RTL وLTR.
+- التعرف التجريبي على المستخدم بالوجه أو جواز السفر، مع إمكانية المتابعة كضيف.
+- مساعد مِنار الذكي للاستفسارات النصية والصوتية وتوجيه المستخدم إلى الخدمة المناسبة.
+- واجهة مهيأة لجهاز خدمة ذاتية، بأزرار وخطوط كبيرة ودعم خصائص الوصول.
+- حماية خصوصية المستخدم من خلال تسجيل الخروج اليدوي والتلقائي عند عدم النشاط.
+- صفحات ونماذج وظيفية مبسطة لجميع الخدمات بدل الصفحات الفارغة.
 
-1. **Install dependencies**
+## الخدمات المتاحة
 
-   ```bash
-   npm install
-   ```
+- أخذ رقم انتظار ذكي.
+- الإرشاد للتائهين.
+- الملاحة الذكية والخرائط.
+- الترجمة الفورية.
+- الشكاوى والبلاغات العامة.
+- الأشخاص المفقودون.
+- المفقودات والمعثورات والمطابقة الذكية.
+- خدمات تطبيق نسك.
+- خدمة الأضاحي.
+- التوعية الاستباقية الذكية.
+- الدليل الديني والمحتوى الإثرائي.
+- خدمة «ساعدني».
+- الخدمات الصحية.
+- النقل والمواصلات.
 
-2. **Configure the database**
+## التقنيات المستخدمة
 
-   Copy `.env.example` to `.env` and point `DATABASE_URL` at a running
-   PostgreSQL instance (local, Docker, or hosted — e.g. Supabase, Neon,
-   Railway).
+- Next.js 15 وReact 19 وTypeScript.
+- Tailwind CSS.
+- Next.js App Router وAPI Routes.
+- Prisma وPostgreSQL للتكامل المستقبلي مع قاعدة البيانات.
+- Framer Motion وLucide React.
 
-   ```bash
-   cp .env.example .env
-   ```
+## تشغيل المشروع محليًا
 
-3. **Run migrations and seed data**
+يتطلب المشروع تثبيت Node.js وnpm.
 
-   ```bash
-   npm run db:migrate
-   npm run db:seed
-   ```
-
-4. **Start the dev server**
-
-   ```bash
-   npm run dev
-   ```
-
-   Open http://localhost:3000. You should see a temporary foundation-check
-   page confirming the stack is wired correctly — the real kiosk screens
-   are added in subsequent development phases.
-
-## Project structure
-
-See the architecture summary shared during planning; the short version:
-
-```
-prisma/            schema.prisma + seed.ts
-src/app/            Next.js App Router routes + API routes
-src/components/     reusable UI components (common, cards, navigation, map)
-src/drawers/         AI Assistant & Accessibility drawers (global, route-independent)
-src/context/         LanguageContext, AccessibilityContext, SessionContext, DrawerContext
-src/hooks/           thin hooks over each context
-src/lib/services/    business logic — the only layer allowed to call Prisma
-src/lib/prisma.ts    Prisma client singleton
-src/types/           shared TypeScript types (mirror Prisma models + DTOs)
+```bash
+npm install
+npm run dev
 ```
 
-## Design tokens
+بعد التشغيل افتح:
 
-All colors, spacing, and typography are centralized in
-`tailwind.config.ts` and derived from the approved UI screenshots. Nothing
-in component code should hardcode a hex value or pixel size — extend the
-token file instead so the whole app stays visually consistent and a real
-brand style-guide can be dropped in later with a single-file change.
+```text
+http://localhost:3000
+```
 
-## Swapping mocks for real integrations later
+للتحقق من سلامة البناء:
 
-Every external dependency (AI, Maps, government ID verification) is
-isolated behind `src/lib/services/*`. Pages and API routes call a service
-function; only that function's internals change when a real API is
-connected — no UI or routing code needs to change. See the header comment
-in each service file for the specific swap point.
+```bash
+npm run type-check
+npm run build
+```
+
+## بنية المشروع
+
+```text
+prisma/                 مخطط قاعدة البيانات والبيانات الأولية
+src/app/                الصفحات والمسارات وواجهات API
+src/components/         المكونات المشتركة وبطاقات الخدمات
+src/context/            إدارة الجلسة واللغة والوصول
+src/drawers/            المساعد الذكي ولوحات الوصول والإشعارات
+src/lib/mock-data/      البيانات التجريبية المنفصلة
+src/lib/services/       طبقة الخدمات والتكاملات
+src/types/              أنواع TypeScript المشتركة
+```
+
+## البيانات والتكاملات التجريبية
+
+التعرف على الوجه، قراءة الجواز، الخرائط، الدفع، إنشاء البلاغات، المساعد الذكي وبقية العمليات الخارجية هي محاكاة مخصصة للعرض التجريبي. عُزلت البيانات والتكاملات داخل طبقات مستقلة حتى يمكن استبدالها لاحقًا بواجهات API معتمدة دون إعادة بناء الواجهات.
+
+## الخصوصية
+
+يمسح النظام بيانات الجلسة المؤقتة عند تسجيل الخروج. كما يعرض تحذيرًا بعد 30 ثانية من عدم النشاط، ثم يبدأ عدًا تنازليًا مدته 10 ثوانٍ قبل إنهاء الجلسة تلقائيًا وإعادة المستخدم إلى واجهة الترحيب.
+
+## حالة المشروع
+
+المشروع قيد التطوير، وهذه النسخة مخصصة لعرض تجربة المستخدم ومسارات الخدمات والتحقق من الفكرة قبل ربطها بالأنظمة الفعلية.
