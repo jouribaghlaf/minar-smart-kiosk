@@ -2,7 +2,7 @@
   "name": "minar-smart-kiosk",
   "version": "0.1.0",
   "private": true,
-  "description": "Minar \u2014 Smart AI Kiosk platform for Hajj & Umrah pilgrims",
+  "description": "Minar — Smart AI Kiosk platform for Hajj & Umrah pilgrims",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -19,31 +19,32 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "next": "15.1.0",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
     "@prisma/client": "5.22.0",
+    "clsx": "^2.1.1",
     "framer-motion": "^11.15.0",
     "lucide-react": "^0.468.0",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^2.5.5",
-    "zod": "^3.24.1",
+    "nanoid": "^5.0.9",
+    "next": "^15.5.18",
     "qrcode.react": "^4.2.0",
-    "nanoid": "^5.0.9"
+    "react": "^19.0.6",
+    "react-dom": "^19.0.6",
+    "tailwind-merge": "^2.5.5",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@next/swc-wasm-nodejs": "^15.5.18",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
-    "typescript": "^5.7.2",
-    "tailwindcss": "^3.4.17",
-    "postcss": "^8.4.49",
     "autoprefixer": "^10.4.20",
-    "prisma": "5.22.0",
-    "tsx": "^4.19.2",
     "eslint": "^9.17.0",
-    "eslint-config-next": "15.1.0",
-    "@eslint/eslintrc": "^3.2.0"
+    "eslint-config-next": "^15.5.18",
+    "postcss": "^8.4.49",
+    "prisma": "5.22.0",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
   },
   "engines": {
     "node": ">=20.0.0"
