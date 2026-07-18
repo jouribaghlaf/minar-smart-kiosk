@@ -1,6 +1,6 @@
 "use client";
 
-import { Accessibility, BookOpen, Bot, BusFront, CircleAlert, ClipboardCheck, Compass, HeartPulse, Languages, MapPinCheck, PackageSearch, Siren, TicketCheck, UserRoundSearch, Utensils, type LucideIcon } from "lucide-react";
+import { Accessibility, BookOpen, BusFront, CircleAlert, ClipboardCheck, Compass, HeartPulse, Languages, MapPinCheck, PackageSearch, Siren, TicketCheck, UserRoundSearch, Utensils, type LucideIcon } from "lucide-react";
 import { ServiceCard } from "@/components/cards/ServiceCard";
 import { useDrawer } from "@/hooks/useDrawer";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -18,7 +18,6 @@ const SERVICES: ServiceDefinition[] = [
   { slug: "lost-items", icon: PackageSearch, ar: "المفقودات والمعثورات", en: "Lost & Found", descriptionAr: "تسجيل المفقود والمعثور عليه مع مطابقة ذكية", descriptionEn: "Report items with AI match simulation" },
   { slug: "nusuk-services", icon: TicketCheck, ar: "خدمات تطبيق نسك", en: "Nusuk App Services", descriptionAr: "الحساب والتصاريح والطباعة والدعم", descriptionEn: "Account, permits, printing, and support" },
   { slug: "udhiyah", icon: Utensils, ar: "خدمة الأضاحي", en: "Adahi Service", descriptionAr: "اختيار النسك والدفع وإصدار السند", descriptionEn: "Choose, pay, and issue an electronic receipt" },
-  { slug: "awareness", icon: Bot, ar: "التوعية الاستباقية الذكية", en: "Proactive Smart Awareness", descriptionAr: "تنبيهات حسب الموقع والطقس والازدحام", descriptionEn: "Contextual alerts by location, weather, and crowds" },
   { slug: "religious-guide", icon: BookOpen, ar: "الدليل الديني والمحتوى الإثرائي", en: "Religious & Enrichment Guide", descriptionAr: "مناسك وأدلة ومحتوى موثوق بلغة المستخدم", descriptionEn: "Trusted rituals and guidance in your language" },
   { slug: "help-me", icon: CircleAlert, ar: "ساعدني", en: "Help Me", descriptionAr: "طلب مساعدة فورية ومشاركة الموقع", descriptionEn: "Instant help request and location sharing", tone: "bg-status-badBg text-status-bad" },
   { slug: "healthcare", icon: HeartPulse, ar: "الخدمات الصحية", en: "Healthcare", descriptionAr: "مراكز صحية وإسعافات وتصعيد الطوارئ", descriptionEn: "Health centers, first aid, and emergency escalation", href: "/healthcare", tone: "bg-status-badBg text-status-bad" },

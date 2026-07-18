@@ -1,6 +1,6 @@
 "use client";
 
-import { Stethoscope, Cpu, Ambulance, Droplets, Pill } from "lucide-react";
+import { Stethoscope, Ambulance, Droplets, Pill } from "lucide-react";
 import { QuickActionTile } from "@/components/common/QuickActionTile";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -14,11 +14,6 @@ import { useLanguage } from "@/hooks/useLanguage";
  */
 export function QuickHealthServicesGrid() {
   const { t } = useLanguage();
-
-  const scrollToDevice = () => {
-    document.getElementById("smart-medical-device")?.scrollIntoView({ behavior: "smooth" });
-  };
-
   const scrollToEmergency = () => {
     document.getElementById("emergency-services")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -26,14 +21,13 @@ export function QuickHealthServicesGrid() {
   return (
     <div className="rounded-card border border-cream-200 bg-white p-5 shadow-card">
       <h2 className="text-kiosk-sm font-bold text-ink-900">{t("خدمات صحية سريعة", "Quick Health Services")}</h2>
-      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         <QuickActionTile
           icon={Stethoscope}
           label={t("استشارة طبية", "Medical Consultation")}
           disabled
           disabledLabel={t("قريباً", "Coming soon")}
         />
-        <QuickActionTile icon={Cpu} label={t("الجهاز الطبي الذكي", "Smart Medical Device")} onClick={scrollToDevice} />
         <QuickActionTile icon={Ambulance} label={t("الإسعاف", "Ambulance")} onClick={scrollToEmergency} />
         <QuickActionTile
           icon={Droplets}

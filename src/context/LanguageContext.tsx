@@ -3,6 +3,7 @@
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { SystemLanguage } from "@/types";
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, type SupportedLanguage } from "@/lib/mock-data/languages";
+import { translateUi } from "@/lib/i18n/uiTranslations";
 
 interface LanguageContextValue {
   language: SystemLanguage;
@@ -53,7 +54,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     document.documentElement.setAttribute("lang", preferredLanguage.code);
   }, [direction, preferredLanguage.code]);
 
-  const t = useCallback((ar: string, en: string) => language === "AR" ? ar : en, [language]);
+  const t = useCallback((ar: string, en: string) => translateUi(preferredLanguage.code, ar, en), [preferredLanguage.code]);
   const value = useMemo(() => ({ language, preferredLanguage, direction, setLanguage, setPreferredLanguage, resetLanguage, toggleLanguage, t }), [language, preferredLanguage, direction, setLanguage, setPreferredLanguage, resetLanguage, toggleLanguage, t]);
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }

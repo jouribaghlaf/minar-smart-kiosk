@@ -62,10 +62,9 @@ const rules: Rule[] = [
     keywords: SYMPTOM_KEYWORDS,
     reply: async (isAr) => ({
       text: isAr
-        ? "لا يقوم المساعد الذكي بإجراء تقييم للأعراض أو التشخيص الطبي. يمكنني توجيهك إلى أقرب جهاز طبي ذكي لإجراء الفحص، أو إرشادك إلى أقرب مركز صحي."
-        : "The AI Assistant doesn't perform symptom assessment or medical diagnosis. I can direct you to the nearest Smart Medical Device for an examination, or guide you to the nearest health center.",
+        ? "لا يقوم المساعد الذكي بإجراء تقييم للأعراض أو التشخيص الطبي. يمكنني إرشادك إلى أقرب مركز صحي أو جهة طبية مختصة."
+        : "The AI Assistant doesn't perform symptom assessment or medical diagnosis. I can guide you to the nearest health center or qualified medical provider.",
       actions: [
-        { label: isAr ? "التوجه إلى الجهاز الطبي الذكي" : "Go to Smart Medical Device", href: "/healthcare#smart-medical-device" },
         { label: isAr ? "أقرب مركز صحي" : "Nearest health center", href: "/healthcare" },
       ],
     }),

@@ -5,7 +5,6 @@ import { HealthcareGreetingBar } from "./_components/HealthcareGreetingBar";
 import { EmergencyServicesCard } from "./_components/EmergencyServicesCard";
 import { NearestHealthCenterCard } from "./_components/NearestHealthCenterCard";
 import { QuickHealthServicesGrid } from "./_components/QuickHealthServicesGrid";
-import { SmartMedicalDeviceCard } from "./_components/SmartMedicalDeviceCard";
 import { OtherHealthServicesGrid } from "./_components/OtherHealthServicesGrid";
 import { MyHealthInfoCard } from "./_components/MyHealthInfoCard";
 import { HealthTipsCard } from "./_components/HealthTipsCard";
@@ -43,7 +42,6 @@ export default function HealthcarePage() {
         <div className="flex flex-col gap-6">
           <NearestHealthCenterCard />
           <QuickHealthServicesGrid />
-          <SmartMedicalDeviceCard />
           <OtherHealthServicesGrid />
         </div>
 

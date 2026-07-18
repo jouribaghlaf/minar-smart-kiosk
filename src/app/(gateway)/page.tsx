@@ -11,7 +11,7 @@ const QUICK_CODES = ["ar", "en", "ur", "id", "tr"];
 
 export default function WelcomePage() {
   const router = useRouter();
-  const { direction, setPreferredLanguage } = useLanguage();
+  const { direction, setPreferredLanguage, t } = useLanguage();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<SupportedLanguage | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -59,6 +59,7 @@ export default function WelcomePage() {
               <h1 className="text-[3.5rem] font-bold leading-none sm:text-[4.5rem]">مِنار</h1>
               <p className="mt-5 text-kiosk-xl font-semibold leading-relaxed">رفيقك الذكي لخدمة ضيوف الرحمن</p>
               <p className="mt-4 max-w-xl text-kiosk-sm leading-relaxed text-white/65">إرشاد، مساعدة، صحة وتنقّل في تجربة موحّدة تراعي لغتك واحتياجاتك.</p>
+              <p className="mt-6 inline-flex rounded-full border border-gold-400/30 bg-gold-400/10 px-5 py-3 text-kiosk-sm font-bold text-gold-400">{t("ذكاء يرشد وخدمة تطمئن", "Intelligence that guides, service that reassures")}</p>
               <div className="mt-9 grid max-w-lg grid-cols-3 gap-3">
                 {["سهل", "موثوق", "متعدد اللغات"].map((label) => <span key={label} className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-center text-sm text-white/70">{label}</span>)}
               </div>
@@ -68,11 +69,11 @@ export default function WelcomePage() {
           <section className="flex items-center bg-cream-100 p-6 sm:p-10 lg:p-12">
             <div className="w-full rounded-[2rem] border border-cream-300 bg-white p-7 shadow-card sm:p-9">
               <span className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-700"><Languages className="h-7 w-7" /></span>
-              <h2 className="text-kiosk-xl font-bold text-brand-900">اختر لغتك</h2>
+              <h2 className="text-kiosk-xl font-bold text-brand-900">{t("اختر لغتك", "Choose your language")}</h2>
               <p className="mt-2 text-kiosk-xs leading-relaxed text-ink-500">ابحث باسم اللغة أو رمزها. ستتكيف النصوص واتجاه الواجهة تلقائيًا.</p>
 
               <div className="relative mt-6">
-                <label htmlFor="language-search" className="mb-2 block text-kiosk-xs font-bold text-brand-900">البحث عن لغة</label>
+                <label htmlFor="language-search" className="mb-2 block text-kiosk-xs font-bold text-brand-900">{t("البحث عن لغة", "Search for a language")}</label>
                 <div className="relative">
                   <Search className="pointer-events-none absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-600" />
                   <input id="language-search" role="combobox" aria-expanded={isOpen} aria-controls="language-options" value={query} onFocus={() => setIsOpen(true)} onChange={(event) => { setQuery(event.target.value); setSelected(null); setIsOpen(true); }} placeholder="العربية، Urdu، Indonesian..." autoComplete="off" className="h-touch w-full rounded-2xl border-2 border-cream-300 bg-cream-100 ps-12 pe-4 text-kiosk-sm outline-none transition focus:border-gold-500 focus:bg-white" />
@@ -80,7 +81,7 @@ export default function WelcomePage() {
                 {isOpen && (
                   <ul id="language-options" role="listbox" className="absolute z-30 mt-2 max-h-64 w-full overflow-y-auto rounded-2xl border border-cream-300 bg-white p-2 shadow-xl">
                     {filtered.slice(0, 12).map((item) => <li key={item.code}><button type="button" onClick={() => chooseLanguage(item)} className="flex min-h-12 w-full items-center justify-between rounded-xl px-4 py-3 text-start hover:bg-brand-50"><span><strong>{item.nativeName}</strong><span className="ms-2 text-sm text-ink-300">{item.name}</span></span>{selected?.code === item.code && <Check className="h-5 w-5 text-brand-600" />}</button></li>)}
-                    {filtered.length === 0 && <li className="p-4 text-center text-ink-500">لم يتم العثور على لغة مطابقة</li>}
+                    {filtered.length === 0 && <li className="p-4 text-center text-ink-500">{t("لم يتم العثور على لغة مطابقة", "No matching language found")}</li>}
                   </ul>
                 )}
               </div>
@@ -88,7 +89,7 @@ export default function WelcomePage() {
               <div className="mt-4 flex flex-wrap gap-2">
                 {QUICK_CODES.map((code) => { const item = SUPPORTED_LANGUAGES.find((language) => language.code === code)!; return <button key={code} type="button" onClick={() => chooseLanguage(item)} className={`min-h-0 rounded-full border px-3 py-2 text-sm font-semibold transition ${selected?.code === code ? "border-gold-500 bg-gold-100 text-brand-900" : "border-brand-100 bg-brand-50 text-brand-800 hover:border-gold-400"}`}>{item.nativeName}</button>; })}
               </div>
-              <button type="button" disabled={!selected} onClick={continueToSignIn} className="mt-7 flex h-touch-lg w-full items-center justify-center gap-3 rounded-2xl bg-brand-700 px-6 text-kiosk-sm font-bold text-white shadow-card transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-40">المتابعة <ArrowIcon className="h-5 w-5" /></button>
+              <button type="button" disabled={!selected} onClick={continueToSignIn} className="mt-7 flex h-touch-lg w-full items-center justify-center gap-3 rounded-2xl bg-brand-700 px-6 text-kiosk-sm font-bold text-white shadow-card transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-40">{t("المتابعة", "Continue")} <ArrowIcon className="h-5 w-5" /></button>
               <p className="mt-4 text-center text-xs text-ink-300">باختيار المتابعة تبدأ جلسة مؤقتة تُمسح عند تسجيل الخروج.</p>
             </div>
           </section>
