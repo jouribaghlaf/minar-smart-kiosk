@@ -28,10 +28,10 @@ export function TopNavigation() {
 
   return (
     <>
-      <header className="flex min-h-20 w-full shrink-0 items-center justify-between gap-3 border-b border-cream-200 bg-white px-4 sm:px-7">
+      <header className="flex min-h-20 w-full shrink-0 items-center justify-between gap-3 border-b border-gold-100 bg-white/95 px-4 shadow-sm backdrop-blur sm:px-7">
         <div className="flex items-center gap-3">
           {showBack && <button type="button" aria-label={t("العودة", "Back")} onClick={() => router.back()} className="flex h-12 items-center gap-2 rounded-2xl border border-cream-300 px-4 font-semibold text-brand-800 hover:bg-brand-50"><BackIcon className="h-5 w-5" /><span className="hidden sm:inline">{t("العودة", "Back")}</span></button>}
-          <div className="flex items-center gap-2 text-brand-900"><MinarLogo className="h-9 w-9 text-brand-700" /><span className="text-kiosk-base font-bold">{t("مِنار", "Minar")}</span></div>
+          <div className="flex items-center gap-3 text-brand-900"><span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-900 text-gold-400"><MinarLogo className="h-7 w-7" /></span><span><span className="block text-kiosk-base font-bold">{t("مِنار", "Minar")}</span><span className="hidden text-xs font-normal text-ink-300 sm:block">{t("خدمة ضيوف الرحمن", "Pilgrim services")}</span></span></div>
         </div>
         <div className="flex items-center gap-2">
           <LanguageSelector />

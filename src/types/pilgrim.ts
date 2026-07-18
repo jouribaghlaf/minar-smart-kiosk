@@ -1,11 +1,6 @@
 export type SystemLanguage = "AR" | "EN";
 
-export type IdentificationMethod =
-  | "FACE_RECOGNITION"
-  | "NUSUK_CARD"
-  | "QR_CODE"
-  | "PASSPORT"
-  | "NATIONAL_ID";
+export type IdentificationMethod = "QR_CODE" | "PASSPORT";
 
 export interface Supervisor {
   id: string;
@@ -34,14 +29,13 @@ export interface Pilgrim {
   systemLanguage: SystemLanguage;
   pilgrimNumber: string;
   arrivalDateHijri: string;
-  arrivalDateGregorian: string; // ISO string over the wire
+  arrivalDateGregorian: string;
   avatarUrl?: string | null;
   lastVerificationMethod?: IdentificationMethod | null;
   campaign: Campaign;
   camp: Camp;
 }
 
-/** Returned by POST /api/identify on success. */
 export interface IdentificationResult {
   success: boolean;
   method: IdentificationMethod;

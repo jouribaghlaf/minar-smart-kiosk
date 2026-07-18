@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { UserCog, ScanFace } from "lucide-react";
+import { UserCog, BadgeCheck } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useSession } from "@/hooks/useSession";
 import type { Pilgrim } from "@/types/pilgrim";
@@ -59,7 +59,7 @@ export function NavigationGreetingBar({ pilgrim }: { pilgrim: Pilgrim | null }) 
           href="/identify"
           className="flex items-center gap-1.5 rounded-pill border border-brand-100 bg-brand-50 px-4 py-2 text-kiosk-xs font-semibold text-brand-700 transition-colors hover:bg-brand-100"
         >
-          <ScanFace className="h-4 w-4" aria-hidden="true" />
+          <BadgeCheck className="h-4 w-4" aria-hidden="true" />
           {t("سجّل الدخول لتجربة مخصصة", "Sign in for a personalized experience")}
         </Link>
       )}

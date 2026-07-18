@@ -1,35 +1,46 @@
 "use client";
 
-import { ScanFace, BookUser, type LucideIcon } from "lucide-react";
+import { BookOpenCheck, QrCode, type LucideIcon } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import type { IdentificationMethod } from "@/types/pilgrim";
 
 const METHODS: { method: IdentificationMethod; icon: LucideIcon; ar: string; en: string }[] = [
-  { method: "FACE_RECOGNITION", icon: ScanFace, ar: "التعرف على الوجه", en: "Face Recognition" },
-  { method: "PASSPORT", icon: BookUser, ar: "قارئ الجوازات", en: "Passport Reader" },
+  { method: "PASSPORT", icon: BookOpenCheck, ar: "قارئ جواز السفر", en: "Passport reader" },
+  { method: "QR_CODE", icon: QrCode, ar: "رمز QR لبطاقة نسك", en: "Nusuk card QR" },
 ];
 
 export function AlternativeMethodsRow({ currentMethod, onSelect }: { currentMethod: IdentificationMethod; onSelect: (method: IdentificationMethod) => void }) {
   const { t } = useLanguage();
-  const alternatives = METHODS.filter((method) => method.method !== currentMethod);
 
   return (
-    <div>
-      <div className="mb-3 flex items-center gap-3 text-ink-400">
-        <span className="h-px flex-1 bg-cream-300" />
-        <span className="text-kiosk-xs">{t("اختر طريقة دخول أخرى", "Choose another sign-in method")}</span>
-        <span className="h-px flex-1 bg-cream-300" />
+    <section aria-label={t("طرق تسجيل الدخول", "Sign-in methods")}>
+      <div className="mb-4 flex items-center gap-3 text-ink-500">
+        <span className="h-px flex-1 bg-gold-100" />
+        <span className="text-kiosk-xs font-semibold">{t("طرق الدخول المتاحة", "Available sign-in methods")}</span>
+        <span className="h-px flex-1 bg-gold-100" />
       </div>
-      <div className="mx-auto grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2">
-        {alternatives.map((alternative) => (
-          <button key={alternative.method} type="button" onClick={() => onSelect(alternative.method)} className="flex items-center gap-3 rounded-card border border-cream-200 bg-white p-4 text-start shadow-card transition hover:-translate-y-0.5 hover:shadow-card-hover">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-700">
-              <alternative.icon className="h-6 w-6" />
-            </span>
-            <span className="text-kiosk-xs font-semibold text-ink-900">{t(alternative.ar, alternative.en)}</span>
-          </button>
-        ))}
+      <div className="mx-auto grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
+        {METHODS.map((item) => {
+          const active = item.method === currentMethod;
+          return (
+            <button
+              key={item.method}
+              type="button"
+              onClick={() => onSelect(item.method)}
+              aria-pressed={active}
+              className={`group flex items-center gap-4 rounded-card border-2 p-5 text-start transition ${active ? "border-gold-500 bg-brand-900 text-white shadow-card-hover" : "border-cream-300 bg-white text-ink-900 shadow-card hover:border-gold-400"}`}
+            >
+              <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${active ? "bg-gold-500 text-brand-900" : "bg-brand-50 text-brand-700"}`}>
+                <item.icon className="h-7 w-7" />
+              </span>
+              <span>
+                <span className="block text-kiosk-sm font-bold">{t(item.ar, item.en)}</span>
+                <span className={`mt-1 block text-sm ${active ? "text-white/65" : "text-ink-500"}`}>{active ? t("الطريقة المختارة", "Selected method") : t("اضغط للاختيار", "Tap to select")}</span>
+              </span>
+            </button>
+          );
+        })}
       </div>
-    </div>
+    </section>
   );
 }

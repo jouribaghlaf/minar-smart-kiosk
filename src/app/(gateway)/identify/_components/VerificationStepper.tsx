@@ -15,8 +15,7 @@ interface StepDefinition {
 interface VerificationStepperProps {
   status: IdentificationStatus;
   step: VerificationStep;
-  /** The first step's copy differs by method ("التقاط صورة الوجه" for
-   *  face recognition vs "قراءة البيانات" for a scan/entry method). */
+  /** The first step copy reflects the selected scanner. */
   firstStepLabelAr: string;
   firstStepLabelEn: string;
 }

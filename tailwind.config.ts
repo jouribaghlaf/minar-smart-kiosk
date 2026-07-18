@@ -23,24 +23,24 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          900: "#0B3B2E", // sidebar / header / deepest surfaces
-          800: "#0F4A39",
-          700: "#145C43", // primary buttons, active states
-          600: "#1B6E4F",
-          500: "#22855F", // hover / mid accents
-          100: "#DCEEE4", // tinted backgrounds (badges, selected chips)
-          50: "#F0F8F4",
+          900: "#003B35", // sidebar / header / deepest surfaces
+          800: "#064A42",
+          700: "#075B50", // primary buttons, active states
+          600: "#0B6B5C",
+          500: "#168474", // hover / mid accents
+          100: "#DCEBE5", // tinted backgrounds (badges, selected chips)
+          50: "#F1F7F4",
         },
         gold: {
-          600: "#A66E23",
-          500: "#C68A2E", // active sidebar indicator, highlights
-          400: "#D9A85A",
-          100: "#F6E8CE",
+          600: "#A8732A",
+          500: "#C99A52", // active sidebar indicator, highlights
+          400: "#DCAE65",
+          100: "#F3E5CF",
         },
         cream: {
-          100: "#F7F4EC", // app background
-          200: "#F1ECE0",
-          300: "#E9E2D2",
+          100: "#F8F5EE", // app background
+          200: "#F1EBDD",
+          300: "#E4DAC6",
         },
         ink: {
           900: "#1A2420", // primary text
@@ -85,12 +85,12 @@ const config: Config = {
         "touch-lg": "5rem", // 80px large touch target (primary actions)
       },
       borderRadius: {
-        card: "1.25rem",
+        card: "1.5rem",
         pill: "999px",
       },
       boxShadow: {
-        card: "0 4px 20px rgba(11, 59, 46, 0.06)",
-        "card-hover": "0 8px 28px rgba(11, 59, 46, 0.12)",
+        card: "0 12px 32px rgba(0, 59, 53, 0.08)",
+        "card-hover": "0 18px 38px rgba(0, 59, 53, 0.15)",
         drawer: "-8px 0 32px rgba(0,0,0,0.12)",
       },
       screens: {

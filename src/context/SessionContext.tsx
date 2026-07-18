@@ -11,7 +11,7 @@ interface SessionContextValue {
   hasActiveSession: boolean;
   isLoading: boolean;
   setPilgrim: (pilgrim: Pilgrim | null) => void;
-  startGuestSession: () => void;
+  startGuestSession: () => Promise<void>;
   refresh: () => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -51,7 +51,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     if (next) window.sessionStorage.setItem(MODE_KEY, nextMode);
   }, []);
 
-  const startGuestSession = useCallback(() => {
+  const startGuestSession = useCallback(async () => {
+    try { await fetch("/api/session", { method: "DELETE" }); } catch { /* guest mode still starts locally */ }
     setPilgrimState(null);
     setMode("guest");
     window.sessionStorage.setItem(MODE_KEY, "guest");

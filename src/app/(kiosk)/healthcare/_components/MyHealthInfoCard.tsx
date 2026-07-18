@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FileHeart, ScanFace } from "lucide-react";
+import { FileHeart, BadgeCheck } from "lucide-react";
 import { InfoRowsCard } from "@/components/cards/InfoRowsCard";
 import { useLanguage } from "@/hooks/useLanguage";
 import type { Pilgrim } from "@/types/pilgrim";
@@ -58,7 +58,7 @@ export function MyHealthInfoCard({ pilgrim }: { pilgrim: Pilgrim | null }) {
           href="/identify"
           className="mt-1 flex h-touch items-center gap-2 rounded-2xl bg-brand-700 px-5 text-kiosk-xs font-semibold text-white shadow-card hover:bg-brand-800"
         >
-          <ScanFace className="h-4 w-4" aria-hidden="true" />
+          <BadgeCheck className="h-4 w-4" aria-hidden="true" />
           {t("التعرف الذكي", "Smart Identification")}
         </Link>
       </div>

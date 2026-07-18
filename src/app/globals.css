@@ -104,3 +104,40 @@ a[role="button"],
 ::-webkit-scrollbar-thumb {
   @apply bg-brand-100 rounded-pill;
 }
+
+
+/* Ministry of Hajj visual-system inspired foundations for this isolated variant. */
+body {
+  background-color: #f8f5ee;
+  background-image:
+    radial-gradient(circle at 12% 10%, rgba(201, 154, 82, 0.08), transparent 26rem),
+    radial-gradient(circle at 92% 88%, rgba(0, 59, 53, 0.06), transparent 30rem);
+}
+
+.ministry-ornament {
+  background:
+    linear-gradient(90deg, transparent 0 3%, #c99a52 3% 8%, transparent 8% 11%, #c99a52 11% 16%, transparent 16% 84%, #c99a52 84% 89%, transparent 89% 92%, #c99a52 92% 97%, transparent 97%),
+    #003b35;
+}
+
+.heritage-pattern {
+  background-image:
+    linear-gradient(30deg, rgba(0, 59, 53, 0.035) 12%, transparent 12.5%, transparent 87%, rgba(0, 59, 53, 0.035) 87.5%),
+    linear-gradient(150deg, rgba(0, 59, 53, 0.035) 12%, transparent 12.5%, transparent 87%, rgba(0, 59, 53, 0.035) 87.5%);
+  background-size: 72px 124px;
+}
+
+.card-surface {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-surface::after {
+  position: absolute;
+  inset-inline: 1.25rem;
+  bottom: 0;
+  height: 3px;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(90deg, transparent, rgba(201, 154, 82, 0.55), transparent);
+  content: "";
+}

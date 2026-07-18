@@ -12,8 +12,8 @@ export default function ServicesPage() {
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
-      <section className="relative overflow-hidden rounded-[2rem] bg-brand-900 p-7 text-white sm:p-9">
-        <div className="absolute -end-16 -top-20 h-64 w-64 rounded-full bg-gold-500/20 blur-3xl" />
+      <section className="relative overflow-hidden rounded-[2rem] border border-gold-400/20 bg-brand-900 p-7 shadow-card-hover text-white sm:p-9">
+        <div className="ministry-ornament absolute inset-x-0 top-0 h-2" /><div className="absolute -end-16 -top-20 h-64 w-64 rounded-full border border-gold-500/20" />
         <div className="relative">
           <div className="mb-3 flex items-center gap-2 text-gold-400">
             <Sparkles className="h-5 w-5" />

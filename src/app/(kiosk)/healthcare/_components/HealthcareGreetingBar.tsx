@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ScanFace, FileHeart } from "lucide-react";
+import { BadgeCheck, FileHeart } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import type { Pilgrim } from "@/types/pilgrim";
 
@@ -43,7 +43,7 @@ export function HealthcareGreetingBar({ pilgrim }: { pilgrim: Pilgrim | null }) 
           href="/identify"
           className="flex items-center gap-1.5 rounded-pill border border-brand-100 bg-brand-50 px-4 py-2 text-kiosk-xs font-semibold text-brand-700 transition-colors hover:bg-brand-100"
         >
-          <ScanFace className="h-4 w-4" aria-hidden="true" />
+          <BadgeCheck className="h-4 w-4" aria-hidden="true" />
           {t("سجّل الدخول لعرض بياناتك الصحية", "Sign in to view your health information")}
         </Link>
       )}

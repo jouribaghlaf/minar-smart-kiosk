@@ -12,7 +12,7 @@ interface UseIdentificationResult {
   step: VerificationStep;
   pilgrim: Pilgrim | null;
   errorMessage: string | null;
-  /** Kicks off verification. `value` is omitted for FACE_RECOGNITION. */
+  /** Starts the selected passport or Nusuk-card verification flow. */
   identify: (value?: string) => Promise<void>;
   reset: () => void;
 }

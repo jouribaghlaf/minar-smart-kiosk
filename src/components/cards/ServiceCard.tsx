@@ -51,10 +51,10 @@ export function ServiceCard({
   );
 
   const className = cn(
-    "card-surface flex flex-col items-start rounded-card border border-cream-200 bg-white p-5 text-start shadow-card transition-all duration-200",
+    "card-surface flex flex-col items-start rounded-card border border-gold-100 bg-white p-6 text-start shadow-card transition-all duration-200",
     disabled
       ? "cursor-not-allowed opacity-60"
-      : "hover:-translate-y-0.5 hover:shadow-card-hover active:translate-y-0"
+      : "hover:-translate-y-1 hover:border-gold-400 hover:shadow-card-hover active:translate-y-0"
   );
 
   if (disabled) {
