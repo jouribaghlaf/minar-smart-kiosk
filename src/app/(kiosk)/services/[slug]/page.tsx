@@ -2,9 +2,10 @@
 
 import { use, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, Loader2, MapPin, Mic, Printer, RotateCcw, Star, Volume2 } from "lucide-react";
+import { BookOpenText, CheckCircle2, ExternalLink, Loader2, MapPin, Mic, Printer, RotateCcw, Star, Volume2 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { SERVICE_CATALOG, type ServiceField } from "@/lib/mock-data/serviceCatalog";
+import { getReligiousGuideTopic, type ReligiousGuideTopic } from "@/lib/mock-data/religiousGuideContent";
 
 type FormValues = Record<string, string>;
 
@@ -27,11 +28,20 @@ export default function ServiceWorkflowPage({ params }: { params: Promise<{ slug
   useEffect(() => { if (Object.keys(values).length) window.sessionStorage.setItem(storageKey, JSON.stringify(values)); }, [storageKey, values]);
 
   const requiredMissing = useMemo(() => definition?.fields.filter((field) => field.required && !values[field.id]?.trim()) ?? [], [definition, values]);
+  const selectedGuideTopic = slug === "religious-guide" ? getReligiousGuideTopic(values.topic) : undefined;
+  const spokenResult = selectedGuideTopic
+    ? [t(selectedGuideTopic.titleAr, selectedGuideTopic.titleEn), ...selectedGuideTopic.sections.flatMap((section) => [t(section.headingAr, section.headingEn), ...(language === "AR" ? section.itemsAr : section.itemsEn)])].join(". ")
+    : t(definition?.successAr ?? "", definition?.successEn ?? "");
   if (!definition) return <div className="m-auto rounded-card bg-white p-8 text-center"><h1 className="text-kiosk-xl font-bold">{t("الخدمة غير متاحة", "Service unavailable")}</h1><button onClick={() => router.push("/services")} className="mt-5 h-touch rounded-2xl bg-brand-700 px-7 font-bold text-white">{t("العودة للخدمات", "Back to services")}</button></div>;
 
   const update = (id: string, value: string) => { setValues((current) => ({ ...current, [id]: value })); setErrors((current) => ({ ...current, [id]: "" })); };
   const next = () => {
     if (requiredMissing.length) { setErrors(Object.fromEntries(requiredMissing.map((field) => [field.id, t("هذا الحقل مطلوب", "This field is required")]))); return; }
+    if (slug === "religious-guide") {
+      setStep(3);
+      window.sessionStorage.removeItem(storageKey);
+      return;
+    }
     setStep(2);
   };
   const submit = () => {
@@ -53,7 +63,7 @@ export default function ServiceWorkflowPage({ params }: { params: Promise<{ slug
     {step === 1 && <section className="rounded-[2rem] border border-cream-300 bg-white p-6 shadow-card sm:p-8">
       <div className="mb-6 flex flex-wrap gap-3"><button type="button" onClick={() => { const target = definition.fields.find((field) => field.type === "textarea"); if (target) update(target.id, t("تم إدخال وصف صوتي تجريبي للحالة", "A demo voice description was captured")); }} className="flex h-12 items-center gap-2 rounded-2xl bg-gold-100 px-4 font-semibold text-gold-600"><Mic className="h-5 w-5" />{t("إدخال صوتي", "Voice input")}</button>{definition.fields.some((field) => field.id === "location") && <button type="button" onClick={() => update("location", t("المسجد الحرام — بوابة الملك فهد", "Grand Mosque — King Fahd Gate"))} className="flex h-12 items-center gap-2 rounded-2xl bg-brand-100 px-4 font-semibold text-brand-700"><MapPin className="h-5 w-5" />{t("تحديد موقعي", "Detect location")}</button>}</div>
       <div className="grid gap-5 sm:grid-cols-2">{definition.fields.map((field) => <Field key={field.id} field={field} value={values[field.id] ?? ""} error={errors[field.id]} update={update} t={t} language={language} />)}</div>
-      <button type="button" onClick={next} className="mt-7 h-touch w-full rounded-2xl bg-brand-700 px-6 text-kiosk-sm font-bold text-white hover:bg-brand-600">{t("مراجعة الطلب", "Review request")}</button>
+      <button type="button" onClick={next} className="mt-7 h-touch w-full rounded-2xl bg-brand-700 px-6 text-kiosk-sm font-bold text-white hover:bg-brand-600">{slug === "religious-guide" ? t("عرض المحتوى", "Show content") : t("مراجعة الطلب", "Review request")}</button>
     </section>}
 
     {step === 2 && <section className="rounded-[2rem] border border-cream-300 bg-white p-6 shadow-card sm:p-8">
@@ -65,10 +75,31 @@ export default function ServiceWorkflowPage({ params }: { params: Promise<{ slug
 
     {step === 3 && <section className="rounded-[2rem] border border-status-good/30 bg-white p-7 text-center shadow-card sm:p-10">
       <CheckCircle2 className="mx-auto h-16 w-16 text-status-good" /><h2 className="mt-4 text-kiosk-xl font-bold text-brand-900">{t(definition.successAr, definition.successEn)}</h2>
-      <div className="mx-auto mt-6 grid max-w-3xl gap-3 sm:grid-cols-2">{(language === "AR" ? definition.mockResultAr : definition.mockResultEn).map((result) => <div key={result} className="rounded-2xl bg-status-goodBg p-4 text-kiosk-xs font-semibold text-ink-700">{result}</div>)}</div>
+      {selectedGuideTopic ? <ReligiousGuideResult topic={selectedGuideTopic} t={t} language={language} /> : <div className="mx-auto mt-6 grid max-w-3xl gap-3 sm:grid-cols-2">{(language === "AR" ? definition.mockResultAr : definition.mockResultEn).map((result) => <div key={result} className="rounded-2xl bg-status-goodBg p-4 text-kiosk-xs font-semibold text-ink-700">{result}</div>)}</div>}
       <div className="mt-7"><p className="text-kiosk-xs font-semibold">{t("قيّم التجربة", "Rate the experience")}</p><div className="mt-2 flex justify-center gap-2">{[1,2,3,4,5].map((value) => <button key={value} type="button" onClick={() => setRating(value)} aria-label={`${value}`} className="min-h-0 p-1"><Star className={`h-8 w-8 ${rating >= value ? "fill-gold-500 text-gold-500" : "text-cream-300"}`} /></button>)}</div>{rating > 0 && <p className="mt-2 text-sm text-status-good">{t("شكرًا لتقييمك", "Thank you for your rating")}</p>}</div>
-      <div className="mt-7 flex flex-wrap justify-center gap-3"><button type="button" onClick={() => window.print()} className="flex h-12 items-center gap-2 rounded-2xl border border-brand-700 px-5 font-bold text-brand-700"><Printer className="h-5 w-5" />{t("طباعة", "Print")}</button><button type="button" onClick={() => window.speechSynthesis?.speak(new SpeechSynthesisUtterance(t(definition.successAr, definition.successEn)))} className="flex h-12 items-center gap-2 rounded-2xl border border-brand-700 px-5 font-bold text-brand-700"><Volume2 className="h-5 w-5" />{t("قراءة صوتية", "Read aloud")}</button><button type="button" onClick={reset} className="flex h-12 items-center gap-2 rounded-2xl bg-brand-700 px-5 font-bold text-white"><RotateCcw className="h-5 w-5" />{t("طلب جديد", "New request")}</button></div>
+      <div className="mt-7 flex flex-wrap justify-center gap-3"><button type="button" onClick={() => window.print()} className="flex h-12 items-center gap-2 rounded-2xl border border-brand-700 px-5 font-bold text-brand-700"><Printer className="h-5 w-5" />{t("طباعة", "Print")}</button><button type="button" onClick={() => window.speechSynthesis?.speak(new SpeechSynthesisUtterance(spokenResult))} className="flex h-12 items-center gap-2 rounded-2xl border border-brand-700 px-5 font-bold text-brand-700"><Volume2 className="h-5 w-5" />{t("قراءة صوتية", "Read aloud")}</button><button type="button" onClick={reset} className="flex h-12 items-center gap-2 rounded-2xl bg-brand-700 px-5 font-bold text-white"><RotateCcw className="h-5 w-5" />{t("طلب جديد", "New request")}</button></div>
     </section>}
+  </div>;
+}
+
+function ReligiousGuideResult({ topic, t, language }: { topic: ReligiousGuideTopic; t: (ar: string, en: string) => string; language: "AR" | "EN" }) {
+  return <div className="mx-auto mt-6 max-w-4xl text-start">
+    <div className="rounded-[1.5rem] border border-gold-200 bg-gold-100 p-5">
+      <div className="flex items-center gap-3 text-brand-900"><BookOpenText className="h-7 w-7 text-gold-600" /><h3 className="text-kiosk-lg font-bold">{t(topic.titleAr, topic.titleEn)}</h3></div>
+      <p className="mt-2 text-kiosk-xs leading-relaxed text-ink-700">{t(topic.introAr, topic.introEn)}</p>
+    </div>
+    <div className="mt-5 grid gap-4">
+      {topic.sections.map((section) => <article key={section.headingEn} className="rounded-[1.5rem] border border-cream-300 bg-cream-100 p-5 sm:p-6">
+        <h4 className="text-kiosk-sm font-bold text-brand-900">{t(section.headingAr, section.headingEn)}</h4>
+        <ul className="mt-3 grid gap-2 text-kiosk-xs leading-relaxed text-ink-700">
+          {(language === "AR" ? section.itemsAr : section.itemsEn).map((item) => <li key={item} className="flex gap-3"><span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-gold-500" /><span>{item}</span></li>)}
+        </ul>
+      </article>)}
+    </div>
+    <div className="mt-5 rounded-2xl border border-brand-100 bg-brand-50 p-4 text-kiosk-xs text-brand-900">
+      <p>{t("هذا محتوى إرشادي مختصر. للأحكام التفصيلية راجع جهة فتوى معتمدة، واتبع تعليمات الجهات المنظمة.", "This is concise guidance. For detailed rulings, consult an authorized scholar and follow official instructions.")}</p>
+      <a href={topic.sourceUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 font-bold text-brand-700 underline"><ExternalLink className="h-4 w-4" />{t("عرض المصدر الرسمي", "View official source")}</a>
+    </div>
   </div>;
 }
 
