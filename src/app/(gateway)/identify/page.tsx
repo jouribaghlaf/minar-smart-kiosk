@@ -27,11 +27,13 @@ function IdentificationScreen() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const methodParam = searchParams.get("method");
+  const requestedReturnTo = searchParams.get("returnTo");
+  const returnTo = requestedReturnTo?.startsWith("/") && !requestedReturnTo.startsWith("//") ? requestedReturnTo : "/services";
   const method: IdentificationMethod = VALID_METHODS.includes(methodParam as IdentificationMethod) ? methodParam as IdentificationMethod : "PASSPORT";
   const { status, step, pilgrim, errorMessage, identify, reset } = useIdentification(method);
 
   useEffect(() => reset(), [method, reset]);
-  const handleSelectMethod = useCallback((next: IdentificationMethod) => router.push(`/identify?method=${next}`), [router]);
+  const handleSelectMethod = useCallback((next: IdentificationMethod) => router.push(`/identify?method=${next}&returnTo=${encodeURIComponent(returnTo)}`), [router, returnTo]);
 
   return (
     <div className="flex flex-1 flex-col gap-7 p-4 sm:p-6 lg:p-8">
@@ -48,7 +50,7 @@ function IdentificationScreen() {
         <div className="flex flex-col gap-4">
           <VerificationStepper status={status} step={step} firstStepLabelAr={FIRST_STEP_LABELS[method].ar} firstStepLabelEn={FIRST_STEP_LABELS[method].en} />
           <PilgrimInfoPreview pilgrim={pilgrim} />
-          {status === "success" && <ContinueToHomePanel />}
+          {status === "success" && <ContinueToHomePanel destination={returnTo} />}
           {status === "error" && (
             <div className="flex flex-col gap-3">
               <AlertBanner icon={AlertCircle} tone="error" title={t("تعذر التحقق", "Verification failed")} message={errorMessage ?? t("تعذر قراءة البيانات. حاول مرة أخرى أو اختر طريقة أخرى.", "We could not read the data. Try again or choose another method.")} />
