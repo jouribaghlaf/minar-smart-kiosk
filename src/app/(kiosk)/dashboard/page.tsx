@@ -8,11 +8,9 @@ import { WelcomeHero } from "./_components/WelcomeHero";
 import { ProfileSummaryGrid } from "./_components/ProfileSummaryGrid";
 import { JourneyProgressCard } from "./_components/JourneyProgressCard";
 import { LiveInfoGrid } from "./_components/LiveInfoGrid";
-import { SmartRecommendationsCard } from "./_components/SmartRecommendationsCard";
 import { UpcomingScheduleCard } from "./_components/UpcomingScheduleCard";
 import { RemindersCard } from "./_components/RemindersCard";
 import { QRContinueCard } from "./_components/QRContinueCard";
-import { RecentNotificationsCard } from "./_components/RecentNotificationsCard";
 import { ContinuePreviousActivityCard } from "./_components/ContinuePreviousActivityCard";
 import { QuickActionsRow } from "./_components/QuickActionsRow";
 import { EnvironmentInfoRow } from "./_components/EnvironmentInfoRow";
@@ -63,13 +61,11 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-6">
           <JourneyProgressCard />
           <LiveInfoGrid />
-          <SmartRecommendationsCard />
           <UpcomingScheduleCard />
         </div>
 
         <div className="flex flex-col gap-6">
           <ContinuePreviousActivityCard />
-          <RecentNotificationsCard />
           <RemindersCard />
           <QRContinueCard pilgrim={pilgrim} />
           <QuickActionsRow pilgrim={pilgrim} />

@@ -29,7 +29,7 @@ export function NavigationGreetingBar({ pilgrim }: { pilgrim: Pilgrim | null }) 
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div>
         <h1 className="text-kiosk-xl font-bold text-brand-900">
-          {t("الملاحة الذكية وإدارة الحشود", "Smart Navigation & Crowd Management")}
+          {t("الملاحة الذكية والإرشاد", "Smart Navigation & Guidance")}
         </h1>
         <p className="mt-1 text-kiosk-xs text-ink-500">
           {t(

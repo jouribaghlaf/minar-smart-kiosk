@@ -12,7 +12,7 @@ interface ServiceDefinition { slug: string; icon: LucideIcon; ar: string; en: st
 
 const SERVICES: ServiceDefinition[] = [
   { slug: "queue", requiresSignIn: true, icon: TicketCheck, ar: "أخذ رقم انتظار ذكي", en: "Smart Queue", descriptionAr: "اختر الخدمة واحصل على رقم ووقت انتظار وشباك الخدمة", descriptionEn: "Get a queue number, wait time, and service counter" },
-  { slug: "navigation", icon: Compass, ar: "الإرشاد والملاحة الذكية", en: "Guidance & Smart Navigation", descriptionAr: "بحث عن الوجهات وطلب مرشد ومسارات تراعي الازدحام", descriptionEn: "Destination search, guide requests, and crowd-aware routes", href: "/navigation" },
+  { slug: "navigation", icon: Compass, ar: "الملاحة الذكية والإرشاد", en: "Smart Navigation & Guidance", descriptionAr: "بحث عن الوجهات وطلب مرشد ومسارات تراعي الازدحام", descriptionEn: "Destination search, guide requests, and crowd-aware routes", href: "/navigation" },
   { slug: "instant-translation", icon: Languages, ar: "الترجمة الفورية", en: "Instant Translation", descriptionAr: "ترجمة صوتية ونصية غير محدودة اللغة", descriptionEn: "Open-language voice and text translation", tone: "bg-gold-100 text-gold-600" },
   { slug: "complaints", requiresSignIn: true, icon: ClipboardCheck, ar: "الشكاوى", en: "Complaints", descriptionAr: "إنشاء شكوى وإرفاق الملفات ومتابعة الحالة", descriptionEn: "Submit attachments and track complaint status" },
   { slug: "reports", icon: Siren, ar: "البلاغات العامة", en: "General Reports", descriptionAr: "تصنيف البلاغ وتوجيهه للجهة المختصة", descriptionEn: "Classify and route reports to the right authority", tone: "bg-status-badBg text-status-bad" },
