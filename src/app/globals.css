@@ -16,6 +16,24 @@
   --kiosk-base-px: 18px;
 }
 
+@media (max-width: 767px) {
+  :root {
+    --kiosk-base-px: 16px;
+  }
+
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  button,
+  a[role="button"],
+  [data-touch-target] {
+    min-height: 2.75rem;
+  }
+}
+
 html {
   font-size: calc(var(--kiosk-base-px) * var(--a11y-font-scale));
   scroll-behavior: smooth;

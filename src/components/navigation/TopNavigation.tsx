@@ -28,12 +28,12 @@ export function TopNavigation() {
 
   return (
     <>
-      <header className="flex min-h-20 w-full shrink-0 items-center justify-between gap-3 border-b border-gold-100 bg-white/95 px-4 shadow-sm backdrop-blur sm:px-7">
-        <div className="flex items-center gap-3">
+      <header className="flex min-h-16 w-full shrink-0 items-center justify-between gap-2 border-b border-gold-100 bg-white/95 px-2.5 py-2 shadow-sm backdrop-blur sm:min-h-20 sm:gap-3 sm:px-7">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           {showBack && <button type="button" aria-label={t("العودة", "Back")} onClick={() => router.back()} className="flex h-12 items-center gap-2 rounded-2xl border border-cream-300 px-4 font-semibold text-brand-800 hover:bg-brand-50"><BackIcon className="h-5 w-5" /><span className="hidden sm:inline">{t("العودة", "Back")}</span></button>}
-          <div className="flex items-center gap-3 text-brand-900"><span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-900 text-gold-400"><MinarLogo className="h-7 w-7" /></span><span><span className="block text-kiosk-base font-bold">{t("مِنار", "Minar")}</span><span className="hidden text-xs font-normal text-ink-300 sm:block">{t("خدمة ضيوف الرحمن", "Pilgrim services")}</span></span></div>
+          <div className="flex min-w-0 items-center gap-2 text-brand-900 sm:gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-900 text-gold-400 sm:h-11 sm:w-11 sm:rounded-2xl"><MinarLogo className="h-6 w-6 sm:h-7 sm:w-7" /></span><span><span className="block truncate text-base font-bold sm:text-kiosk-base">{t("مِنار", "Minar")}</span><span className="hidden text-xs font-normal text-ink-300 sm:block">{t("خدمة ضيوف الرحمن", "Pilgrim services")}</span></span></div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           <LanguageSelector />
           <button type="button" onClick={openAccessibility} aria-label={t("إمكانية الوصول والصوت", "Accessibility and sound")} className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cream-300 text-brand-700 hover:bg-brand-50"><Accessibility className="h-5 w-5" /><Volume2 className="-ms-1 h-3.5 w-3.5" /></button>
           {hasActiveSession && <button type="button" aria-label={t("تسجيل الخروج", "Log out")} onClick={() => setConfirming(true)} className="flex h-12 items-center gap-2 rounded-2xl bg-emergency px-4 font-bold text-white hover:bg-emergency-dark"><LogOut className="h-5 w-5" /><span className="hidden md:inline">{t("تسجيل الخروج", "Log out")}</span></button>}
