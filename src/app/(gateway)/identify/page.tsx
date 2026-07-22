@@ -13,12 +13,12 @@ import { VerificationStepper } from "./_components/VerificationStepper";
 import { PilgrimInfoPreview } from "./_components/PilgrimInfoPreview";
 import { CredentialEntryPanel } from "./_components/CredentialEntryPanel";
 import { AlternativeMethodsRow } from "./_components/AlternativeMethodsRow";
-import { ContinueToHomePanel } from "./_components/ContinueToHomePanel";
 
-const VALID_METHODS: IdentificationMethod[] = ["PASSPORT", "QR_CODE"];
+const VALID_METHODS: IdentificationMethod[] = ["PASSPORT", "QR_CODE", "VISA"];
 const FIRST_STEP_LABELS: Record<IdentificationMethod, { ar: string; en: string }> = {
   QR_CODE: { ar: "قراءة رمز بطاقة نسك", en: "Reading Nusuk card QR" },
   PASSPORT: { ar: "قراءة بيانات الجواز", en: "Reading passport data" },
+  VISA: { ar: "قراءة رقم التأشيرة", en: "Reading visa number" },
 };
 
 function IdentificationScreen() {
@@ -28,11 +28,16 @@ function IdentificationScreen() {
   const searchParams = useSearchParams();
   const methodParam = searchParams.get("method");
   const requestedReturnTo = searchParams.get("returnTo");
-  const returnTo = requestedReturnTo?.startsWith("/") && !requestedReturnTo.startsWith("//") ? requestedReturnTo : "/services";
+  const returnTo = requestedReturnTo?.startsWith("/") && !requestedReturnTo.startsWith("//") ? requestedReturnTo : "/dashboard";
   const method: IdentificationMethod = VALID_METHODS.includes(methodParam as IdentificationMethod) ? methodParam as IdentificationMethod : "PASSPORT";
   const { status, step, pilgrim, errorMessage, identify, reset } = useIdentification(method);
 
   useEffect(() => reset(), [method, reset]);
+  useEffect(() => {
+    if (status === "success" && pilgrim) {
+      router.replace(`/verify-otp?returnTo=${encodeURIComponent(returnTo)}`);
+    }
+  }, [status, pilgrim, router, returnTo]);
   const handleSelectMethod = useCallback((next: IdentificationMethod) => router.push(`/identify?method=${next}&returnTo=${encodeURIComponent(returnTo)}`), [router, returnTo]);
 
   return (
@@ -40,7 +45,7 @@ function IdentificationScreen() {
       <header className="mx-auto max-w-4xl text-center">
         <span className="mb-3 inline-flex rounded-full border border-gold-100 bg-white px-4 py-2 text-sm font-bold text-gold-600 shadow-card">{t("دخول آمن وسريع", "Secure and fast access")}</span>
         <h1 className="text-kiosk-2xl font-bold text-brand-900">{t("اختر طريقة الدخول", "Choose how to continue")}</h1>
-        <p className="mt-2 text-kiosk-sm text-ink-500">{t("استخدم قارئ الجوازات أو رمز QR في بطاقة نسك، أو تابع مباشرة كضيف.", "Use the passport reader, Nusuk card QR, or continue as a guest.")}</p>
+        <p className="mt-2 text-kiosk-sm text-ink-500">{t("استخدم بطاقة نسك أو قارئ الجواز أو رقم التأشيرة، أو تابع مباشرة كضيف.", "Use a Nusuk card, passport reader, visa number, or continue as a guest.")}</p>
       </header>
 
       <AlternativeMethodsRow currentMethod={method} onSelect={handleSelectMethod} />
@@ -50,7 +55,6 @@ function IdentificationScreen() {
         <div className="flex flex-col gap-4">
           <VerificationStepper status={status} step={step} firstStepLabelAr={FIRST_STEP_LABELS[method].ar} firstStepLabelEn={FIRST_STEP_LABELS[method].en} />
           <PilgrimInfoPreview pilgrim={pilgrim} />
-          {status === "success" && <ContinueToHomePanel destination={returnTo} />}
           {status === "error" && (
             <div className="flex flex-col gap-3">
               <AlertBanner icon={AlertCircle} tone="error" title={t("تعذر التحقق", "Verification failed")} message={errorMessage ?? t("تعذر قراءة البيانات. حاول مرة أخرى أو اختر طريقة أخرى.", "We could not read the data. Try again or choose another method.")} />

@@ -2,7 +2,7 @@
 
 import { use, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BookOpenText, CheckCircle2, ExternalLink, Loader2, MapPin, Mic, Printer, RotateCcw, Star, Volume2 } from "lucide-react";
+import { BookOpenText, CheckCircle2, ExternalLink, Loader2, MapPin, Mic, Printer, RotateCcw, Star, TicketCheck, Volume2 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { SERVICE_CATALOG, type ServiceField } from "@/lib/mock-data/serviceCatalog";
 import { getReligiousGuideTopic, type ReligiousGuideTopic } from "@/lib/mock-data/religiousGuideContent";
@@ -50,6 +50,13 @@ export default function ServiceWorkflowPage({ params }: { params: Promise<{ slug
   };
   const reset = () => { setStep(1); setValues({}); setErrors({}); setRating(0); window.sessionStorage.removeItem(storageKey); };
 
+  if (slug === "reports") {
+    return <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 p-5 sm:p-8">
+      <section className="rounded-[2rem] bg-brand-900 p-7 text-white shadow-card-hover sm:p-9"><p className="text-kiosk-xs font-semibold text-gold-400">{t("خدمة البلاغات", "Reports service")}</p><h1 className="mt-2 text-kiosk-2xl font-bold">{t(definition.titleAr, definition.titleEn)}</h1></section>
+      <section className="flex flex-1 flex-col items-center justify-center rounded-[2rem] border border-gold-100 bg-white p-8 text-center shadow-card sm:p-12"><span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gold-100 text-[2rem]">📋</span><h2 className="mt-5 text-kiosk-lg font-bold text-brand-900">{t("الشاشة جاهزة للتصنيف المعتمد", "Ready for the approved classification")}</h2><p className="mt-3 max-w-2xl text-kiosk-sm leading-relaxed text-ink-500">{t("سيتم تعبئة قائمة أنواع البلاغات لاحقًا حسب التصنيف المعتمد من نسك عناية.", "Report types will be added later according to the approved Nusuk Care classification.")}</p><p className="mt-5 rounded-2xl bg-brand-50 p-4 text-kiosk-xs text-brand-900">{t("لن يتم إنشاء أي بلاغ أو إرسال بيانات من هذه الشاشة حاليًا.", "No report or data will be submitted from this screen yet.")}</p></section>
+    </div>;
+  }
+
   return <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 p-5 pb-28 sm:p-8">
     <section className="rounded-[2rem] bg-brand-900 p-7 text-white sm:p-9">
       <p className="text-kiosk-xs font-semibold text-gold-400">{t("خدمة تجريبية ذكية", "Smart demo service")}</p>
@@ -66,7 +73,14 @@ export default function ServiceWorkflowPage({ params }: { params: Promise<{ slug
       <button type="button" onClick={next} className="mt-7 h-touch w-full rounded-2xl bg-brand-700 px-6 text-kiosk-sm font-bold text-white hover:bg-brand-600">{slug === "religious-guide" ? t("عرض المحتوى", "Show content") : t("مراجعة الطلب", "Review request")}</button>
     </section>}
 
-    {step === 2 && <section className="rounded-[2rem] border border-cream-300 bg-white p-6 shadow-card sm:p-8">
+    {step === 2 && slug === "queue" && <section className="rounded-[2rem] border border-gold-200 bg-white p-7 text-center shadow-card sm:p-10">
+      <TicketCheck className="mx-auto h-16 w-16 text-gold-600" />
+      <h2 className="mt-5 text-kiosk-xl font-bold text-brand-900">{t("هل ترغب في حجز رقم انتظار والتحويل إلى موظف؟", "Would you like to book a queue number and be transferred to an employee?")}</h2>
+      <p className="mt-3 text-kiosk-sm text-ink-500">{t("لن يصدر رقم دور إلا بعد موافقتك. عند الرفض يمكنك متابعة استخدام الخدمات.", "A queue number is issued only after your approval. If you decline, you can continue using the services.")}</p>
+      <div className="mt-7 grid grid-cols-2 gap-3"><button type="button" onClick={() => setStep(1)} className="h-touch rounded-2xl border-2 border-brand-700 font-bold text-brand-700">{t("لا، متابعة الخدمة", "No, continue")}</button><button type="button" disabled={isSubmitting} onClick={submit} className="flex h-touch items-center justify-center gap-2 rounded-2xl bg-brand-700 font-bold text-white">{isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}{t("نعم، احجز رقم انتظار", "Yes, book a number")}</button></div>
+    </section>}
+
+    {step === 2 && slug !== "queue" && <section className="rounded-[2rem] border border-cream-300 bg-white p-6 shadow-card sm:p-8">
       <h2 className="text-kiosk-lg font-bold text-brand-900">{t("راجع البيانات قبل الإرسال", "Review before submitting")}</h2>
       <div className="mt-5 grid gap-3 sm:grid-cols-2">{definition.fields.filter((field) => values[field.id]).map((field) => <div key={field.id} className="rounded-2xl bg-cream-100 p-4"><p className="text-sm font-semibold text-ink-500">{t(field.labelAr, field.labelEn)}</p><p className="mt-1 font-bold text-ink-900">{field.type === "file" ? values[field.id] : values[field.id]}</p></div>)}</div>
       <div className="mt-6 rounded-2xl border border-gold-400/40 bg-gold-100 p-4 text-kiosk-xs text-ink-700">{t("بتأكيد الإرسال سيتم إنشاء طلب تجريبي وإظهاره للمتابعة. لن تُرسل البيانات لأي جهة خارجية.", "Confirming creates a demo request for tracking. No data is sent externally.")}</div>

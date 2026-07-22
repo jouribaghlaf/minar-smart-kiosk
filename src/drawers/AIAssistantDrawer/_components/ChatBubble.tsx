@@ -7,14 +7,19 @@ import { useDrawer } from "@/hooks/useDrawer";
 import { cn } from "@/lib/utils/cn";
 import type { ChatMessage } from "@/types/chat";
 
-export function ChatBubble({ message }: { message: ChatMessage }) {
+export function ChatBubble({ message, onAction }: { message: ChatMessage; onAction?: (actionId: NonNullable<ChatMessage["suggestedActions"]>[number]["actionId"]) => void }) {
   const { direction } = useLanguage();
   const router = useRouter();
   const { closeDrawer } = useDrawer();
   const isUser = message.sender === "USER";
   const ArrowIcon = direction === "rtl" ? ArrowLeft : ArrowRight;
 
-  const handleAction = (href: string) => {
+  const handleAction = (href?: string, actionId?: NonNullable<ChatMessage["suggestedActions"]>[number]["actionId"]) => {
+    if (actionId) {
+      onAction?.(actionId);
+      return;
+    }
+    if (!href) return;
     router.push(href);
     closeDrawer();
   };
@@ -44,9 +49,9 @@ export function ChatBubble({ message }: { message: ChatMessage }) {
           <div className="flex flex-wrap gap-2">
             {message.suggestedActions.map((action) => (
               <button
-                key={action.href}
+                key={action.href ?? action.actionId}
                 type="button"
-                onClick={() => handleAction(action.href)}
+                onClick={() => handleAction(action.href, action.actionId)}
                 className="flex items-center gap-1.5 rounded-pill border border-brand-200 bg-white px-3 py-1.5 text-[0.7rem] font-semibold text-brand-700 transition-colors hover:bg-brand-50"
               >
                 {action.label}

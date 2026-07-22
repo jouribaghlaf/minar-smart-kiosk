@@ -1,12 +1,13 @@
 "use client";
 
-import { BookOpenCheck, QrCode, type LucideIcon } from "lucide-react";
+import { BookOpenCheck, FileKey2, QrCode, type LucideIcon } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import type { IdentificationMethod } from "@/types/pilgrim";
 
 const METHODS: { method: IdentificationMethod; icon: LucideIcon; ar: string; en: string }[] = [
   { method: "PASSPORT", icon: BookOpenCheck, ar: "قارئ جواز السفر", en: "Passport reader" },
   { method: "QR_CODE", icon: QrCode, ar: "رمز QR لبطاقة نسك", en: "Nusuk card QR" },
+  { method: "VISA", icon: FileKey2, ar: "رقم التأشيرة", en: "Visa number" },
 ];
 
 export function AlternativeMethodsRow({ currentMethod, onSelect }: { currentMethod: IdentificationMethod; onSelect: (method: IdentificationMethod) => void }) {
@@ -19,7 +20,7 @@ export function AlternativeMethodsRow({ currentMethod, onSelect }: { currentMeth
         <span className="text-kiosk-xs font-semibold">{t("طرق الدخول المتاحة", "Available sign-in methods")}</span>
         <span className="h-px flex-1 bg-gold-100" />
       </div>
-      <div className="mx-auto grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="mx-auto grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-3">
         {METHODS.map((item) => {
           const active = item.method === currentMethod;
           return (

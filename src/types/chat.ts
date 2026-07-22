@@ -10,7 +10,8 @@ export interface ChatMessage {
 
 export interface SuggestedAction {
   label: string;
-  href: string; // e.g. "/navigation?destination=HEALTH_CENTER"
+  href?: string;
+  actionId?: "QUEUE_ACCEPT" | "QUEUE_DECLINE" | "START_REPORT" | "START_GUIDANCE";
 }
 
 export interface SuggestedPrompt {

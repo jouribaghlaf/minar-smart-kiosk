@@ -9,6 +9,11 @@ const DESTINATION_LABELS: Record<DestinationType, string> = {
   CAMP: "المخيم",
   RESTROOM: "أقرب دورة مياه",
   HEALTH_CENTER: "أقرب مركز صحي",
+  HOTEL: "الفندق",
+  HARAM: "المسجد الحرام",
+  PHARMACY: "أقرب صيدلية",
+  MALL: "مكة مول",
+  RESTAURANTS: "مطاعم حول الحرم",
 };
 
 /**

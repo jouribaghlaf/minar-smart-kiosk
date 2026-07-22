@@ -1,6 +1,6 @@
 export type SystemLanguage = "AR" | "EN";
 
-export type IdentificationMethod = "QR_CODE" | "PASSPORT";
+export type IdentificationMethod = "QR_CODE" | "PASSPORT" | "VISA";
 
 export interface Supervisor {
   id: string;
@@ -19,6 +19,14 @@ export interface Camp {
   id: string;
   number: string;
   location: string;
+  category: "A" | "B";
+}
+
+export interface Hotel {
+  name: string;
+  rating: number;
+  location: string;
+  nearPublicServices: boolean;
 }
 
 export interface Pilgrim {
@@ -32,6 +40,10 @@ export interface Pilgrim {
   arrivalDateGregorian: string;
   avatarUrl?: string | null;
   lastVerificationMethod?: IdentificationMethod | null;
+  program: string;
+  serviceProvider: string;
+  hotel: Hotel;
+  arafatTransport: string;
   campaign: Campaign;
   camp: Camp;
 }

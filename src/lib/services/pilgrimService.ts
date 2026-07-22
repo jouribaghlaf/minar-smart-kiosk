@@ -21,13 +21,22 @@ export function toPilgrimDTO(record: PilgrimRecord): Pilgrim {
     arrivalDateGregorian: record.arrivalDateGregorian,
     avatarUrl: record.avatarUrl,
     lastVerificationMethod: record.lastVerificationMethod,
+    program: record.id === "pilgrim_1" ? "برنامج العمرة المتكامل" : "برنامج ضيوف الرحمن",
+    serviceProvider: record.id === "pilgrim_1" ? "شركة إثراء الضيافة" : "شركة مناسك الرحلة",
+    hotel: {
+      name: record.id === "pilgrim_1" ? "جبل عمر حياة ريجنسي" : "فندق أنجم مكة",
+      rating: 5,
+      location: "مكة المكرمة — المنطقة المركزية",
+      nearPublicServices: true,
+    },
+    arafatTransport: "حافلة ترددية مكيفة — المسار A3",
     campaign: {
       id: campaign.id,
       name: campaign.name,
       campaignNumber: campaign.campaignNumber,
       supervisor: { id: supervisor.id, name: supervisor.name, phone: supervisor.phone },
     },
-    camp: { id: camp.id, number: camp.number, location: camp.location },
+    camp: { id: camp.id, number: camp.number, location: camp.location, category: record.id === "pilgrim_1" ? "A" : "B" },
   };
 }
 
@@ -51,7 +60,8 @@ export async function identifyPilgrim(method: IdentificationMethod, value?: stri
 
   const normalized = value.trim();
   const record = mockStore.pilgrims.find((pilgrim) => {
-    if (method === "QR_CODE") return pilgrim.credentials.qrCode === normalized;
+    if (method === "QR_CODE") return pilgrim.credentials.qrCode === normalized || pilgrim.credentials.nusukCardNumber === normalized;
+    if (method === "VISA") return pilgrim.credentials.visaNumber === normalized;
     return pilgrim.credentials.passportNumber === normalized;
   });
 

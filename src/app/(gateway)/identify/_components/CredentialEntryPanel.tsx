@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { BookOpenCheck, QrCode, RefreshCw, ScanLine, type LucideIcon } from "lucide-react";
+import { BookOpenCheck, FileKey2, QrCode, RefreshCw, ScanLine, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/common/Button";
 import { useLanguage } from "@/hooks/useLanguage";
 import type { IdentificationMethod } from "@/types/pilgrim";
@@ -21,6 +21,18 @@ interface MethodConfig {
 }
 
 const METHOD_CONFIG: Record<IdentificationMethod, MethodConfig> = {
+  VISA: {
+    icon: FileKey2,
+    titleAr: "التحقق برقم التأشيرة",
+    titleEn: "Verify with visa number",
+    instructionAr: "أدخل رقم التأشيرة كما يظهر في مستند التأشيرة",
+    instructionEn: "Enter the visa number shown on your visa document",
+    actionAr: "استخدام رقم تأشيرة تجريبي",
+    actionEn: "Use demo visa number",
+    placeholderAr: "رقم التأشيرة",
+    placeholderEn: "Visa number",
+    demoValue: "VISA-2026-778812",
+  },
   QR_CODE: {
     icon: QrCode,
     titleAr: "مسح رمز QR لبطاقة نسك",

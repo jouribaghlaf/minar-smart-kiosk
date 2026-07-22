@@ -6,7 +6,7 @@ import { Clock3 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useSession } from "@/hooks/useSession";
 
-const IDLE_MS = 30_000;
+const IDLE_MS = 60_000;
 const WARNING_SECONDS = 10;
 
 export function IdleSessionGuard() {

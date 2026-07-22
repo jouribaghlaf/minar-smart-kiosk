@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSession } from "@/hooks/useSession";
 import type { IdentificationMethod, IdentificationResult, Pilgrim } from "@/types/pilgrim";
 
 export type VerificationStep = 0 | 1 | 2 | 3;
@@ -36,7 +35,6 @@ export function useIdentification(method: IdentificationMethod): UseIdentificati
   const [step, setStep] = useState<VerificationStep>(0);
   const [pilgrim, setPilgrimState] = useState<Pilgrim | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { setPilgrim } = useSession();
   const stepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const clearStepTimer = useCallback(() => {
@@ -83,7 +81,7 @@ export function useIdentification(method: IdentificationMethod): UseIdentificati
 
         if (result.success && result.pilgrim) {
           setPilgrimState(result.pilgrim);
-          setPilgrim(result.pilgrim);
+          window.sessionStorage.setItem("minar_pending_pilgrim", JSON.stringify(result.pilgrim));
           setStatus("success");
         } else {
           setErrorMessage(result.errorMessage ?? null);
@@ -96,7 +94,7 @@ export function useIdentification(method: IdentificationMethod): UseIdentificati
         setStatus("error");
       }
     },
-    [method, clearStepTimer, setPilgrim]
+    [method, clearStepTimer]
   );
 
   return { status, step, pilgrim, errorMessage, identify, reset };

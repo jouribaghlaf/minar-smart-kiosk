@@ -156,7 +156,7 @@ const rules: Rule[] = [
       text: isAr
         ? "يمكنني مساعدتك في رفع بلاغ فوري (ضياع، فقدان ممتلكات، حالة طارئة، مساعدة ميدانية). ما نوع المساعدة التي تحتاجها؟"
         : "I can help you submit an immediate report (lost pilgrim, lost item, emergency, or field assistance). What kind of help do you need?",
-      actions: [{ label: isAr ? "الخدمات الصحية والطوارئ" : "Healthcare & Emergency", href: "/healthcare" }],
+      actions: [{ label: isAr ? "بدء خدمة البلاغ" : "Start report service", actionId: "START_REPORT" }],
     }),
   },
   {
@@ -166,6 +166,13 @@ const rules: Rule[] = [
         ? "مستوى الازدحام العام حالياً متوسط. يمكنني مساعدتك باختيار أفضل مسار أو مستوى أقل ازدحاماً لوجهتك."
         : "The overall crowd level right now is moderate. I can help you pick a less crowded route or level for your destination.",
       actions: [{ label: isAr ? "الملاحة الذكية" : "Smart Navigation", href: "/navigation" }],
+    }),
+  },
+  {
+    keywords: ["وجهة", "أرشدني", "طريق", "navigate", "directions", "route"],
+    reply: async (isAr) => ({
+      text: isAr ? "يمكنني تنفيذ الإرشاد من هنا. ما الوجهة التي تريد الوصول إليها؟" : "I can start guidance here. Which destination would you like to reach?",
+      actions: [{ label: isAr ? "بدء الإرشاد" : "Start guidance", actionId: "START_GUIDANCE" }],
     }),
   },
   {
@@ -180,8 +187,9 @@ const rules: Rule[] = [
     keywords: ["دين", "فتوى", "مناسك", "religious", "fatwa", "ritual"],
     reply: async (isAr) => ({
       text: isAr
-        ? "الدليل الديني الكامل بالمناسك والأدعية والفتاوى المعتمدة سيكون متاحاً قريباً من الصفحة الرئيسية."
-        : "The full religious guide with rites, supplications, and official rulings will be available soon from the home screen.",
+        ? "يمكنك فتح الدليل الديني واختيار دليل العمرة أو الحج أو تعليمات المناسك والأدعية لعرض المحتوى مباشرة."
+        : "Open the religious guide and choose the Umrah guide, Hajj guide, ritual instructions, or supplications to view the content directly.",
+      actions: [{ label: isAr ? "فتح الدليل الديني" : "Open religious guide", href: "/services/religious-guide" }],
     }),
   },
   {

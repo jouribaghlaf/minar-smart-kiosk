@@ -16,6 +16,7 @@ import { RecentNotificationsCard } from "./_components/RecentNotificationsCard";
 import { ContinuePreviousActivityCard } from "./_components/ContinuePreviousActivityCard";
 import { QuickActionsRow } from "./_components/QuickActionsRow";
 import { EnvironmentInfoRow } from "./_components/EnvironmentInfoRow";
+import { PostLoginChoices } from "./_components/PostLoginChoices";
 
 /**
  * Screen 03 — Personalized Home Dashboard.
@@ -55,6 +56,7 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
       <WelcomeHero pilgrim={pilgrim} />
+      <PostLoginChoices />
       <ProfileSummaryGrid pilgrim={pilgrim} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px] lg:items-start">

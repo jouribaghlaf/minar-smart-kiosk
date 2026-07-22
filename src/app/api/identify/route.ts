@@ -7,7 +7,7 @@ const COOKIE_NAME = process.env.SESSION_COOKIE_NAME ?? "minar_session";
 const SESSION_TTL_MINUTES = Number(process.env.SESSION_TTL_MINUTES ?? 120);
 
 const bodySchema = z.object({
-  method: z.enum(["QR_CODE", "PASSPORT"]),
+  method: z.enum(["QR_CODE", "PASSPORT", "VISA"]),
   value: z.string().optional(),
 });
 

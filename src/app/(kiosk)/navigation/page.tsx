@@ -14,8 +14,9 @@ import { SmartCrowdAnalysis } from "./_components/SmartCrowdAnalysis";
 import { RouteMapPanel } from "./_components/RouteMapPanel";
 import { SendRouteQRCard } from "./_components/SendRouteQRCard";
 import { NavigationQuickActions } from "./_components/NavigationQuickActions";
+import { GuidanceSearchPanel } from "./_components/GuidanceSearchPanel";
 
-const VALID_DESTINATIONS: DestinationType[] = ["TAWAF", "SAI", "CAMP", "RESTROOM", "HEALTH_CENTER"];
+const VALID_DESTINATIONS: DestinationType[] = ["TAWAF", "SAI", "CAMP", "RESTROOM", "HEALTH_CENTER", "HOTEL", "HARAM", "PHARMACY", "MALL", "RESTAURANTS"];
 
 const DESTINATION_ACTIVITY_LABEL: Record<DestinationType, { ar: string; en: string }> = {
   TAWAF: { ar: "الملاحة إلى الطواف", en: "Navigating to Tawaf" },
@@ -23,6 +24,11 @@ const DESTINATION_ACTIVITY_LABEL: Record<DestinationType, { ar: string; en: stri
   CAMP: { ar: "الملاحة إلى المخيم", en: "Navigating to Camp" },
   RESTROOM: { ar: "الملاحة إلى أقرب دورة مياه", en: "Navigating to Nearest Restroom" },
   HEALTH_CENTER: { ar: "الملاحة إلى أقرب مركز صحي", en: "Navigating to Nearest Health Center" },
+  HOTEL: { ar: "الملاحة إلى الفندق", en: "Navigating to hotel" },
+  HARAM: { ar: "الملاحة إلى المسجد الحرام", en: "Navigating to Grand Mosque" },
+  PHARMACY: { ar: "الملاحة إلى أقرب صيدلية", en: "Navigating to nearest pharmacy" },
+  MALL: { ar: "الملاحة إلى مكة مول", en: "Navigating to Makkah Mall" },
+  RESTAURANTS: { ar: "الملاحة إلى مطاعم حول الحرم", en: "Navigating to restaurants near Haram" },
 };
 
 /**
@@ -69,6 +75,7 @@ function NavigationScreen() {
     <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
       <NavigationGreetingBar pilgrim={pilgrim} />
       <DestinationSelector selected={destination} onSelect={handleChangeDestination} />
+      <GuidanceSearchPanel pilgrim={pilgrim} onSelect={handleChangeDestination} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_420px] lg:items-start">
         <div className="flex flex-col gap-6">

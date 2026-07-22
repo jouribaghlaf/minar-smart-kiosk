@@ -1,4 +1,4 @@
-export type DestinationType = "TAWAF" | "SAI" | "CAMP" | "RESTROOM" | "HEALTH_CENTER";
+export type DestinationType = "TAWAF" | "SAI" | "CAMP" | "RESTROOM" | "HEALTH_CENTER" | "HOTEL" | "HARAM" | "PHARMACY" | "MALL" | "RESTAURANTS";
 
 export type CrowdLevelLabel =
   | "EXCELLENT"
