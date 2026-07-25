@@ -27,8 +27,8 @@ const METHOD_CONFIG: Record<IdentificationMethod, MethodConfig> = {
     titleEn: "Verify with visa number",
     instructionAr: "أدخل رقم التأشيرة المكوّن من 10 أرقام فقط دون حروف أو رموز",
     instructionEn: "Enter the 10-digit visa number using numbers only",
-    actionAr: "استخدام رقم تأشيرة تجريبي",
-    actionEn: "Use demo visa number",
+    actionAr: "تشغيل قارئ التأشيرة التجريبي",
+    actionEn: "Start demo visa reader",
     placeholderAr: "رقم التأشيرة",
     placeholderEn: "Visa number",
     demoValue: "1234567890",
@@ -98,16 +98,16 @@ export function CredentialEntryPanel({ method, status, errorMessage, onEdit, onS
         <h2 className="text-kiosk-xl font-bold">{t(config.titleAr, config.titleEn)}</h2>
         <p className="mt-2 max-w-xl text-kiosk-xs leading-relaxed text-white/70">{t(config.instructionAr, config.instructionEn)}</p>
 
-        {method !== "VISA" && <div className="my-6 flex h-36 items-center justify-center rounded-[1.5rem] border-2 border-dashed border-gold-400/45 bg-black/10">
+        <div className="my-6 flex h-36 items-center justify-center rounded-[1.5rem] border-2 border-dashed border-gold-400/45 bg-black/10">
           {isProcessing ? <RefreshCw className="h-12 w-12 animate-spin text-gold-400" /> : <ScanLine className="h-12 w-12 text-gold-400" />}
-        </div>}
+        </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          {method !== "VISA" && <button type="button" disabled={isProcessing} onClick={simulateScan} className="flex h-touch-lg items-center justify-center gap-3 rounded-2xl bg-gold-500 px-6 text-kiosk-sm font-bold text-brand-900 transition hover:bg-gold-400 disabled:opacity-50">
+          <button type="button" disabled={isProcessing} onClick={simulateScan} className="flex h-touch-lg items-center justify-center gap-3 rounded-2xl bg-gold-500 px-6 text-kiosk-sm font-bold text-brand-900 transition hover:bg-gold-400 disabled:opacity-50">
             <ScanLine className="h-6 w-6" />
             {isProcessing ? t("جارٍ التحقق...", "Verifying...") : t(config.actionAr, config.actionEn)}
-          </button>}
-          {method !== "VISA" && <div className="flex items-center gap-3 text-white/40"><span className="h-px flex-1 bg-white/15" /><span className="text-xs">{t("إدخال تجريبي بديل", "Demo fallback")}</span><span className="h-px flex-1 bg-white/15" /></div>}
+          </button>
+          <div className="flex items-center gap-3 text-white/40"><span className="h-px flex-1 bg-white/15" /><span className="text-xs">{t("إدخال يدوي بديل", "Manual fallback")}</span><span className="h-px flex-1 bg-white/15" /></div>
           <div className="flex gap-2">
             <input value={value} onChange={(event) => { setValue(event.target.value); setValidationError(""); if (status === "error") onEdit?.(); }} inputMode={method === "VISA" ? "numeric" : undefined} maxLength={method === "VISA" ? 10 : undefined} disabled={isProcessing} placeholder={method === "VISA" ? t("أدخل 10 أرقام", "Enter 10 digits") : t(config.placeholderAr, config.placeholderEn)} dir="ltr" aria-invalid={Boolean(validationError || errorMessage)} className={`h-touch min-w-0 flex-1 rounded-2xl border bg-white/10 px-4 text-center text-kiosk-xs text-white outline-none placeholder:text-white/35 focus:border-gold-400 ${validationError || errorMessage ? "border-emergency" : "border-white/20"}`} />
             <Button type="submit" disabled={!value.trim() || isProcessing} className="bg-white text-brand-900 hover:bg-cream-100">{t("تحقق", "Verify")}</Button>
