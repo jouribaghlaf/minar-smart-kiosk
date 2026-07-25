@@ -31,7 +31,7 @@ export function ServiceGrid() {
   const router = useRouter();
   const [blockedService, setBlockedService] = useState<ServiceDefinition | null>(null);
 
-  const signIn = (method: "PASSPORT" | "QR_CODE") => {
+  const signIn = (method: "PASSPORT" | "QR_CODE" | "VISA") => {
     if (!blockedService) return;
     const destination = blockedService.href ?? `/services/${blockedService.slug}`;
     router.push(`/identify?method=${method}&returnTo=${encodeURIComponent(destination)}`);
