@@ -41,25 +41,6 @@ export function AIAssistantDrawer() {
   const sessionIdRef = useRef<string>(nanoid(16));
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const appendAssistant = (text: string, suggestedActions?: ChatMessage["suggestedActions"]) => {
-    setMessages((prev) => [...prev, { id: nanoid(10), sender: "ASSISTANT", text, suggestedActions, createdAt: new Date().toISOString() }]);
-  };
-
-  const handleWorkflowAction = (actionId: NonNullable<ChatMessage["suggestedActions"]>[number]["actionId"]) => {
-    if (actionId === "QUEUE_ACCEPT") {
-      appendAssistant(t(
-        "تم حجز رقمك بنجاح ✅\nرقم الانتظار: M-042\nالقسم: خدمات ضيوف الرحمن\nيسبقك: 3 أشخاص\nالوقت المتوقع: 8 دقائق\nالشباك المتوقع: 4",
-        "Your number was booked successfully ✅\nQueue number: M-042\nDepartment: Pilgrim Services\nPeople ahead: 3\nEstimated wait: 8 minutes\nExpected counter: 4"
-      ));
-    } else if (actionId === "QUEUE_DECLINE") {
-      appendAssistant(t("حسنًا، لن أحجز رقم انتظار. يمكنك متابعة سؤالك أو اختيار خدمة أخرى.", "Okay, no queue number was booked. You can continue your question or choose another service."));
-    } else if (actionId === "START_REPORT") {
-      appendAssistant(t("شاشة البلاغات جاهزة، وسيتم إضافة التصنيفات المعتمدة من نسك عناية لاحقًا. لم يتم إرسال أي بيانات.", "The reports screen is ready; approved Nusuk Care categories will be added later. No data was submitted."));
-    } else if (actionId === "START_GUIDANCE") {
-      appendAssistant(t("أرسل لي اسم وجهتك، وسأحدد لك المسار والمدة وأقرب المعالم بصورة تجريبية.", "Send me your destination and I’ll provide a demo route, duration, and nearby landmarks."));
-    }
-  };
-
   // Seed the welcome message once. Re-seeds if the language changes
   // before the pilgrim has sent anything, so switching AR/EN before
   // typing doesn't leave a stale-language greeting.
@@ -98,18 +79,6 @@ export function AIAssistantDrawer() {
     };
     setMessages((prev) => [...prev, userMessage]);
 
-    const normalized = text.toLowerCase();
-    const needsEmployee = ["موظف", "رقم انتظار", "دور", "employee", "queue", "ticket"].some((keyword) => normalized.includes(keyword));
-    if (needsEmployee) {
-      appendAssistant(
-        t("هذه الخدمة تحتاج إلى موظف. هل ترغب في حجز رقم انتظار؟", "This service requires an employee. Would you like to book a queue number?"),
-        [
-          { label: t("نعم، احجز الرقم", "Yes, book a number"), actionId: "QUEUE_ACCEPT" },
-          { label: t("لا، متابعة المحادثة", "No, continue chatting"), actionId: "QUEUE_DECLINE" },
-        ]
-      );
-      return;
-    }
     setIsSending(true);
 
     try {
@@ -155,7 +124,7 @@ export function AIAssistantDrawer() {
     >
       <div ref={scrollRef} className="flex flex-col gap-4">
         {messages.map((message) => (
-          <ChatBubble key={message.id} message={message} onAction={handleWorkflowAction} />
+          <ChatBubble key={message.id} message={message} />
         ))}
         {isSending && <TypingIndicator />}
       </div>

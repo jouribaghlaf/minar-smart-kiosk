@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { z } from "zod";
-import { getAssistantReply } from "@/lib/services/aiService";
+import { getAgentReply } from "@/lib/services/agentService";
 import { getPilgrimBySessionToken } from "@/lib/services/sessionService";
 import type { AssistantPilgrimContext } from "@/types/chat";
 
@@ -45,12 +45,14 @@ export async function POST(request: Request) {
   const pilgrimContext: AssistantPilgrimContext | undefined = pilgrim
     ? {
         name: pilgrim.name,
-        campaignName: pilgrim.campaign.name,
-        campNumber: pilgrim.camp.number,
-        campLocation: pilgrim.camp.location,
+        hotelName: pilgrim.hotel.name,
+        hotelRating: pilgrim.hotel.rating,
+        hotelLocation: pilgrim.hotel.location,
+        minaCamp: pilgrim.minaCamp,
+        arafatCamp: pilgrim.arafatCamp,
       }
     : undefined;
 
-  const reply = await getAssistantReply({ ...parsed.data, pilgrimContext });
+  const reply = await getAgentReply({ ...parsed.data, pilgrimContext });
   return NextResponse.json({ reply });
 }

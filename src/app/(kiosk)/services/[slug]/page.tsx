@@ -19,6 +19,7 @@ export default function ServiceWorkflowPage({ params }: { params: Promise<{ slug
   const [values, setValues] = useState<FormValues>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [executionResult, setExecutionResult] = useState<{ ar: string[]; en: string[] } | null>(null);
   const [rating, setRating] = useState(0);
 
   useEffect(() => {
@@ -44,11 +45,24 @@ export default function ServiceWorkflowPage({ params }: { params: Promise<{ slug
     }
     setStep(2);
   };
-  const submit = () => {
+  const submit = async () => {
     setIsSubmitting(true);
-    window.setTimeout(() => { setIsSubmitting(false); setStep(3); window.sessionStorage.removeItem(storageKey); }, 900);
+    try {
+      const response = await fetch("/api/services/execute", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug, values }) });
+      const result = await response.json();
+      if (!result.success) {
+        setErrors(result.errors ?? {});
+        setStep(1);
+        return;
+      }
+      setExecutionResult({ ar: result.resultAr, en: result.resultEn });
+      setStep(3);
+      window.sessionStorage.removeItem(storageKey);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-  const reset = () => { setStep(1); setValues({}); setErrors({}); setRating(0); window.sessionStorage.removeItem(storageKey); };
+  const reset = () => { setStep(1); setValues({}); setErrors({}); setRating(0); setExecutionResult(null); window.sessionStorage.removeItem(storageKey); };
 
   if (slug === "reports") {
     return <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 p-5 sm:p-8">
@@ -89,7 +103,7 @@ export default function ServiceWorkflowPage({ params }: { params: Promise<{ slug
 
     {step === 3 && <section className="rounded-[2rem] border border-status-good/30 bg-white p-7 text-center shadow-card sm:p-10">
       <CheckCircle2 className="mx-auto h-16 w-16 text-status-good" /><h2 className="mt-4 text-kiosk-xl font-bold text-brand-900">{t(definition.successAr, definition.successEn)}</h2>
-      {selectedGuideTopic ? <ReligiousGuideResult topic={selectedGuideTopic} t={t} language={language} /> : <div className="mx-auto mt-6 grid max-w-3xl gap-3 sm:grid-cols-2">{(language === "AR" ? definition.mockResultAr : definition.mockResultEn).map((result) => <div key={result} className="rounded-2xl bg-status-goodBg p-4 text-kiosk-xs font-semibold text-ink-700">{result}</div>)}</div>}
+      {selectedGuideTopic ? <ReligiousGuideResult topic={selectedGuideTopic} t={t} language={language} /> : <div className="mx-auto mt-6 grid max-w-3xl gap-3 sm:grid-cols-2">{(executionResult ? (language === "AR" ? executionResult.ar : executionResult.en) : (language === "AR" ? definition.mockResultAr : definition.mockResultEn)).map((result) => <div key={result} className="rounded-2xl bg-status-goodBg p-4 text-kiosk-xs font-semibold text-ink-700">{result}</div>)}</div>}
       <div className="mt-7"><p className="text-kiosk-xs font-semibold">{t("قيّم التجربة", "Rate the experience")}</p><div className="mt-2 flex justify-center gap-2">{[1,2,3,4,5].map((value) => <button key={value} type="button" onClick={() => setRating(value)} aria-label={`${value}`} className="min-h-0 p-1"><Star className={`h-8 w-8 ${rating >= value ? "fill-gold-500 text-gold-500" : "text-cream-300"}`} /></button>)}</div>{rating > 0 && <p className="mt-2 text-sm text-status-good">{t("شكرًا لتقييمك", "Thank you for your rating")}</p>}</div>
       <div className="mt-7 flex flex-wrap justify-center gap-3"><button type="button" onClick={() => window.print()} className="flex h-12 items-center gap-2 rounded-2xl border border-brand-700 px-5 font-bold text-brand-700"><Printer className="h-5 w-5" />{t("طباعة", "Print")}</button><button type="button" onClick={() => window.speechSynthesis?.speak(new SpeechSynthesisUtterance(spokenResult))} className="flex h-12 items-center gap-2 rounded-2xl border border-brand-700 px-5 font-bold text-brand-700"><Volume2 className="h-5 w-5" />{t("قراءة صوتية", "Read aloud")}</button><button type="button" onClick={reset} className="flex h-12 items-center gap-2 rounded-2xl bg-brand-700 px-5 font-bold text-white"><RotateCcw className="h-5 w-5" />{t("طلب جديد", "New request")}</button></div>
     </section>}

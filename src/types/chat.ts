@@ -30,9 +30,11 @@ export interface SuggestedPrompt {
  */
 export interface AssistantPilgrimContext {
   name: string;
-  campaignName: string;
-  campNumber: string;
-  campLocation: string;
+  hotelName: string;
+  hotelRating: number;
+  hotelLocation: string;
+  minaCamp: { siteNumber: string; category: string; zone: string };
+  arafatCamp: { siteNumber: string; category: string; zone: string };
 }
 
 export interface AssistantRequest {

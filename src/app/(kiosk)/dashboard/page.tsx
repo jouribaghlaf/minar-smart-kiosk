@@ -7,7 +7,6 @@ import { useSession } from "@/hooks/useSession";
 import { WelcomeHero } from "./_components/WelcomeHero";
 import { ProfileSummaryGrid } from "./_components/ProfileSummaryGrid";
 import { JourneyProgressCard } from "./_components/JourneyProgressCard";
-import { LiveInfoGrid } from "./_components/LiveInfoGrid";
 import { UpcomingScheduleCard } from "./_components/UpcomingScheduleCard";
 import { RemindersCard } from "./_components/RemindersCard";
 import { ContinuePreviousActivityCard } from "./_components/ContinuePreviousActivityCard";
@@ -59,7 +58,6 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px] lg:items-start">
         <div className="flex flex-col gap-6">
           <JourneyProgressCard />
-          <LiveInfoGrid />
           <UpcomingScheduleCard />
         </div>
 

@@ -49,15 +49,11 @@ export function ProfileSummaryGrid({ pilgrim }: { pilgrim: Pilgrim }) {
         <dl className="mt-4 grid gap-3"><div><dt className="text-sm text-ink-500">{t("اسم الفندق", "Hotel name")}</dt><dd className="font-bold">{pilgrim.hotel.name}</dd></div><div><dt className="text-sm text-ink-500">{t("التصنيف", "Rating")}</dt><dd className="font-bold">{pilgrim.hotel.rating} {t("نجوم", "stars")}</dd></div><div className="flex items-center gap-2 text-status-good"><Sparkles className="h-4 w-4" /><dd className="font-semibold">{t("قريب من الخدمات العامة", "Near public services")}</dd></div></dl>
       </Link>
 
-      <DetailCard icon={MapPinned} title={t("مخيم منى", "Mina camp")} rows={[
-        { label: t("شاخص الموقع", "Site number"), value: pilgrim.minaCamp.siteNumber },
-        { label: t("الفئة", "Category"), value: pilgrim.minaCamp.category },
-        { label: t("المنطقة", "Zone"), value: pilgrim.minaCamp.zone },
-      ]} />
-      <DetailCard icon={MapPinned} title={t("مخيم عرفة", "Arafat camp")} rows={[
-        { label: t("شاخص الموقع", "Site number"), value: pilgrim.arafatCamp.siteNumber },
-        { label: t("الفئة", "Category"), value: pilgrim.arafatCamp.category },
-        { label: t("المنطقة", "Zone"), value: pilgrim.arafatCamp.zone },
+      <DetailCard icon={MapPinned} title={t("مخيمات المشاعر", "Holy sites camps")} rows={[
+        { label: t("مخيم منى — شاخص الموقع", "Mina — site number"), value: pilgrim.minaCamp.siteNumber },
+        { label: t("مخيم منى — الفئة والمنطقة", "Mina — category and zone"), value: `${pilgrim.minaCamp.category} — ${t("المنطقة", "Zone")} ${pilgrim.minaCamp.zone}` },
+        { label: t("مخيم عرفة — شاخص الموقع", "Arafat — site number"), value: pilgrim.arafatCamp.siteNumber },
+        { label: t("مخيم عرفة — الفئة والمنطقة", "Arafat — category and zone"), value: `${pilgrim.arafatCamp.category} — ${t("المنطقة", "Zone")} ${pilgrim.arafatCamp.zone}` },
       ]} />
       <DetailCard icon={BusFront} title={t("بطاقة وسائل النقل", "Transport card")} rows={transportRows} wide />
     </div>
