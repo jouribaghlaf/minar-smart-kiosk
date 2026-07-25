@@ -47,12 +47,6 @@ export function VerificationStepper({
       inProgressAr: "جاري تحميل البيانات",
       inProgressEn: "Loading your data",
     },
-    {
-      labelAr: "تحديد اللغة",
-      labelEn: "Setting language",
-      inProgressAr: "جاري تحديد اللغة",
-      inProgressEn: "Setting your language",
-    },
   ];
 
   return (
@@ -62,7 +56,7 @@ export function VerificationStepper({
         {steps.map((s, index) => {
           const isDone = status === "success" || (status !== "idle" && index < step);
           const isActive = status === "processing" && index === step;
-          const isFailed = status === "error" && index === step;
+          const isFailed = status === "error" && index === Math.min(step, steps.length - 1);
 
           return (
             <li key={index} className="flex items-center gap-3">

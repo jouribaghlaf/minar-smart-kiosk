@@ -2,9 +2,8 @@
 
 import { Suspense, useCallback, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AlertCircle, RefreshCw, ShieldCheck, UserRound } from "lucide-react";
+import { ShieldCheck, UserRound } from "lucide-react";
 import { AlertBanner } from "@/components/common/AlertBanner";
-import { Button } from "@/components/common/Button";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useSession } from "@/hooks/useSession";
 import type { IdentificationMethod } from "@/types/pilgrim";
@@ -51,16 +50,10 @@ function IdentificationScreen() {
       <AlternativeMethodsRow currentMethod={method} onSelect={handleSelectMethod} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px] lg:items-start">
-        <CredentialEntryPanel method={method} status={status} onSubmit={identify} />
+        <CredentialEntryPanel method={method} status={status} errorMessage={errorMessage} onEdit={reset} onSubmit={identify} />
         <div className="flex flex-col gap-4">
           <VerificationStepper status={status} step={step} firstStepLabelAr={FIRST_STEP_LABELS[method].ar} firstStepLabelEn={FIRST_STEP_LABELS[method].en} />
           <PilgrimInfoPreview pilgrim={pilgrim} />
-          {status === "error" && (
-            <div className="flex flex-col gap-3">
-              <AlertBanner icon={AlertCircle} tone="error" title={t("تعذر التحقق", "Verification failed")} message={errorMessage ?? t("تعذر قراءة البيانات. حاول مرة أخرى أو اختر طريقة أخرى.", "We could not read the data. Try again or choose another method.")} />
-              <Button variant="outline" onClick={reset} icon={<RefreshCw className="h-5 w-5" />}>{t("إعادة المحاولة", "Try again")}</Button>
-            </div>
-          )}
         </div>
       </div>
 

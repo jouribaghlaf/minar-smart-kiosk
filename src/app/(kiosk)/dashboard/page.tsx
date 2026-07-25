@@ -10,7 +10,6 @@ import { JourneyProgressCard } from "./_components/JourneyProgressCard";
 import { LiveInfoGrid } from "./_components/LiveInfoGrid";
 import { UpcomingScheduleCard } from "./_components/UpcomingScheduleCard";
 import { RemindersCard } from "./_components/RemindersCard";
-import { QRContinueCard } from "./_components/QRContinueCard";
 import { ContinuePreviousActivityCard } from "./_components/ContinuePreviousActivityCard";
 import { QuickActionsRow } from "./_components/QuickActionsRow";
 import { EnvironmentInfoRow } from "./_components/EnvironmentInfoRow";
@@ -67,7 +66,6 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-6">
           <ContinuePreviousActivityCard />
           <RemindersCard />
-          <QRContinueCard pilgrim={pilgrim} />
           <QuickActionsRow pilgrim={pilgrim} />
           <EnvironmentInfoRow />
         </div>

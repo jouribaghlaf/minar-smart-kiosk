@@ -59,7 +59,7 @@ const METHOD_CONFIG: Record<IdentificationMethod, MethodConfig> = {
   },
 };
 
-export function CredentialEntryPanel({ method, status, onSubmit }: { method: IdentificationMethod; status: IdentificationStatus; onSubmit: (value: string) => void }) {
+export function CredentialEntryPanel({ method, status, errorMessage, onEdit, onSubmit }: { method: IdentificationMethod; status: IdentificationStatus; errorMessage?: string | null; onEdit?: () => void; onSubmit: (value: string) => void }) {
   const { t } = useLanguage();
   const [value, setValue] = useState("");
   const [validationError, setValidationError] = useState("");
@@ -109,10 +109,10 @@ export function CredentialEntryPanel({ method, status, onSubmit }: { method: Ide
           </button>}
           {method !== "VISA" && <div className="flex items-center gap-3 text-white/40"><span className="h-px flex-1 bg-white/15" /><span className="text-xs">{t("إدخال تجريبي بديل", "Demo fallback")}</span><span className="h-px flex-1 bg-white/15" /></div>}
           <div className="flex gap-2">
-            <input value={value} onChange={(event) => { setValue(event.target.value); setValidationError(""); }} inputMode={method === "VISA" ? "numeric" : undefined} maxLength={method === "VISA" ? 10 : undefined} disabled={isProcessing} placeholder={method === "VISA" ? t("أدخل 10 أرقام", "Enter 10 digits") : t(config.placeholderAr, config.placeholderEn)} dir="ltr" aria-invalid={Boolean(validationError)} className={`h-touch min-w-0 flex-1 rounded-2xl border bg-white/10 px-4 text-center text-kiosk-xs text-white outline-none placeholder:text-white/35 focus:border-gold-400 ${validationError ? "border-emergency" : "border-white/20"}`} />
+            <input value={value} onChange={(event) => { setValue(event.target.value); setValidationError(""); if (status === "error") onEdit?.(); }} inputMode={method === "VISA" ? "numeric" : undefined} maxLength={method === "VISA" ? 10 : undefined} disabled={isProcessing} placeholder={method === "VISA" ? t("أدخل 10 أرقام", "Enter 10 digits") : t(config.placeholderAr, config.placeholderEn)} dir="ltr" aria-invalid={Boolean(validationError || errorMessage)} className={`h-touch min-w-0 flex-1 rounded-2xl border bg-white/10 px-4 text-center text-kiosk-xs text-white outline-none placeholder:text-white/35 focus:border-gold-400 ${validationError || errorMessage ? "border-emergency" : "border-white/20"}`} />
             <Button type="submit" disabled={!value.trim() || isProcessing} className="bg-white text-brand-900 hover:bg-cream-100">{t("تحقق", "Verify")}</Button>
           </div>
-          {method === "VISA" && <p className={`text-sm font-semibold ${validationError ? "text-red-300" : "text-white/60"}`}>{validationError || t(`${value.length}/10 أرقام`, `${value.length}/10 digits`)}</p>}
+          {(method === "VISA" || errorMessage) && <p className={`text-xs ${validationError || errorMessage ? "font-semibold text-red-300" : "text-white/60"}`}>{validationError || errorMessage || t(`${value.length}/10 أرقام`, `${value.length}/10 digits`)}</p>}
         </form>
       </div>
     </div>

@@ -15,6 +15,7 @@ export function WelcomeHero({ pilgrim }: { pilgrim: Pilgrim }) {
           <h1 className="text-kiosk-xl font-bold text-white sm:text-kiosk-2xl">
             {t(`مرحباً بك، ${pilgrim.name}${pilgrim.pilgrimType === "HAJJ" ? " - حاج" : ""}`, `Welcome, ${pilgrim.name}${pilgrim.pilgrimType === "HAJJ" ? " - Pilgrim" : ""}`)}
           </h1>
+          <p className="mt-1 text-xs font-semibold text-gold-300">{t("انتهاء التأشيرة", "Visa expiry")}: {pilgrim.visaExpiryDate}</p>
           <p className="mt-1 text-kiosk-sm text-white/75">
             {t(
               "نسعد بخدمتك ونتمنى لك حجاً مبروراً وسعياً مشكوراً",

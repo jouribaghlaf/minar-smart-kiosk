@@ -35,7 +35,7 @@ export function toPilgrimDTO(record: PilgrimRecord): Pilgrim {
     },
     minaCamp: { siteNumber: "8/56", category: "A", zone: "2" },
     arafatCamp: { siteNumber: "4/56", category: "A", zone: "3" },
-    additionalServices: ["دورات مياه خاصة", "سيارة خاصة", "مساحة مخصصة للعائلة"],
+    additionalServices: ["دورات مياه خاصة", "بوفيه", "سيارة خاصة", "مساحة مخصصة للعائلة"],
     mealPlan: "بوفيه",
     transportPlan: {
       airport: "من وإلى المطار — سيارة خاصة",

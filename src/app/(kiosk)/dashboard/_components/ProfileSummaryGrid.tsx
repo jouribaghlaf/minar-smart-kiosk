@@ -34,9 +34,7 @@ export function ProfileSummaryGrid({ pilgrim }: { pilgrim: Pilgrim }) {
         { label: t("اسم البرنامج", "Program name"), value: pilgrim.program },
         { label: t("المسار", "Track"), value: pilgrim.programRoute },
         { label: t("رقم الضيف", "Guest number"), value: pilgrim.pilgrimNumber },
-        { label: t("انتهاء التأشيرة", "Visa expiry"), value: pilgrim.visaExpiryDate },
         { label: t("الخدمات الإضافية", "Additional services"), value: pilgrim.additionalServices.join("، ") },
-        { label: t("الوجبات", "Meals"), value: pilgrim.mealPlan },
       ]} />
 
       <DetailCard icon={Users} title={t("شركة مقدم الخدمة", "Service provider")} rows={[
