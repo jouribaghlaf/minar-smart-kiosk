@@ -29,6 +29,23 @@ export interface Hotel {
   nearPublicServices: boolean;
 }
 
+export interface SacredSiteCamp {
+  siteNumber: string;
+  category: "A" | "B";
+  zone: string;
+}
+
+export interface TransportPlan {
+  airport: string;
+  makkahToMadinah: string;
+  madinahToMakkah: string;
+  makkahToMina: string;
+  minaToArafat: string;
+  arafatToMuzdalifah: string;
+  muzdalifahToMina: string;
+  minaToMakkah: string;
+}
+
 export interface Pilgrim {
   id: string;
   name: string;
@@ -41,9 +58,17 @@ export interface Pilgrim {
   avatarUrl?: string | null;
   lastVerificationMethod?: IdentificationMethod | null;
   program: string;
+  pilgrimType: "HAJJ" | "UMRAH";
+  programRoute: string;
+  visaExpiryDate: string;
+  serviceCenterNumber: string;
   serviceProvider: string;
   hotel: Hotel;
-  arafatTransport: string;
+  minaCamp: SacredSiteCamp;
+  arafatCamp: SacredSiteCamp;
+  additionalServices: string[];
+  mealPlan: string;
+  transportPlan: TransportPlan;
   campaign: Campaign;
   camp: Camp;
 }

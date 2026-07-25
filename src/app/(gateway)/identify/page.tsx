@@ -18,7 +18,7 @@ const VALID_METHODS: IdentificationMethod[] = ["PASSPORT", "QR_CODE", "VISA"];
 const FIRST_STEP_LABELS: Record<IdentificationMethod, { ar: string; en: string }> = {
   QR_CODE: { ar: "قراءة رمز بطاقة نسك", en: "Reading Nusuk card QR" },
   PASSPORT: { ar: "قراءة بيانات الجواز", en: "Reading passport data" },
-  VISA: { ar: "قراءة رقم التأشيرة", en: "Reading visa number" },
+  VISA: { ar: "التحقق من رقم التأشيرة", en: "Verifying visa number" },
 };
 
 function IdentificationScreen() {

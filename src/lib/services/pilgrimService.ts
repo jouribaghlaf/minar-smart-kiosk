@@ -21,15 +21,32 @@ export function toPilgrimDTO(record: PilgrimRecord): Pilgrim {
     arrivalDateGregorian: record.arrivalDateGregorian,
     avatarUrl: record.avatarUrl,
     lastVerificationMethod: record.lastVerificationMethod,
-    program: record.id === "pilgrim_1" ? "برنامج العمرة المتكامل" : "برنامج ضيوف الرحمن",
-    serviceProvider: record.id === "pilgrim_1" ? "شركة إثراء الضيافة" : "شركة مناسك الرحلة",
+    program: record.id === "pilgrim_1" ? "برنامج حج ضيوف البيت" : "برنامج ضيوف الرحمن",
+    pilgrimType: record.id === "pilgrim_1" ? "HAJJ" : "UMRAH",
+    programRoute: record.id === "pilgrim_1" ? "حاج بلا حقيبة" : "مسار العمرة المتكامل",
+    visaExpiryDate: record.id === "pilgrim_1" ? "30 ذو الحجة 1447هـ — 16 يونيو 2026" : "15 يوليو 2026",
+    serviceCenterNumber: record.id === "pilgrim_1" ? "5" : "7",
+    serviceProvider: record.id === "pilgrim_1" ? "شركة ضيوف البيت" : "شركة مناسك الرحلة",
     hotel: {
-      name: record.id === "pilgrim_1" ? "جبل عمر حياة ريجنسي" : "فندق أنجم مكة",
+      name: record.id === "pilgrim_1" ? "رافلز مكة" : "فندق أنجم مكة",
       rating: 5,
       location: "مكة المكرمة — المنطقة المركزية",
       nearPublicServices: true,
     },
-    arafatTransport: "حافلة ترددية مكيفة — المسار A3",
+    minaCamp: { siteNumber: "8/56", category: "A", zone: "2" },
+    arafatCamp: { siteNumber: "4/56", category: "A", zone: "3" },
+    additionalServices: ["دورات مياه خاصة", "سيارة خاصة", "مساحة مخصصة للعائلة"],
+    mealPlan: "بوفيه",
+    transportPlan: {
+      airport: "من وإلى المطار — سيارة خاصة",
+      makkahToMadinah: "من مكة إلى المدينة — قطار",
+      madinahToMakkah: "من المدينة إلى مكة — قطار",
+      makkahToMina: "من مكة إلى منى — سيارة خاصة",
+      minaToArafat: "من منى إلى عرفة — سيارة خاصة",
+      arafatToMuzdalifah: "من عرفة إلى مزدلفة — سيارة خاصة",
+      muzdalifahToMina: "من مزدلفة إلى منى — سيارة خاصة",
+      minaToMakkah: "من منى إلى مكة — سيارة خاصة",
+    },
     campaign: {
       id: campaign.id,
       name: campaign.name,
@@ -59,6 +76,9 @@ export async function identifyPilgrim(method: IdentificationMethod, value?: stri
   }
 
   const normalized = value.trim();
+  if (method === "VISA" && !/^\d{10}$/.test(normalized)) {
+    return { success: false, method, errorMessage: "رقم التأشيرة يجب أن يتكون من 10 أرقام فقط دون حروف أو رموز." };
+  }
   const record = mockStore.pilgrims.find((pilgrim) => {
     if (method === "QR_CODE") return pilgrim.credentials.qrCode === normalized || pilgrim.credentials.nusukCardNumber === normalized;
     if (method === "VISA") return pilgrim.credentials.visaNumber === normalized;

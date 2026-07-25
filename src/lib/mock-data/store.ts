@@ -255,7 +255,7 @@ function buildInitialStore(): MockStore {
       nusukCardNumber: "NSK-778812",
       qrCode: "MINAR-QR-778812",
       passportNumber: "A1234567",
-      visaNumber: "VISA-2026-778812",
+      visaNumber: "1234567890",
       nationalId: "1029384756",
     },
   };
@@ -277,7 +277,7 @@ function buildInitialStore(): MockStore {
       nusukCardNumber: "NSK-445529",
       qrCode: "MINAR-QR-445529",
       passportNumber: "B7654321",
-      visaNumber: "VISA-2026-445529",
+      visaNumber: "9876543210",
       nationalId: "5647382910",
     },
   };

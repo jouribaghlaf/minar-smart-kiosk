@@ -13,7 +13,7 @@ export function WelcomeHero({ pilgrim }: { pilgrim: Pilgrim }) {
       <div className="relative flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-kiosk-xl font-bold text-white sm:text-kiosk-2xl">
-            {t(`مرحباً بك، ${pilgrim.name}`, `Welcome, ${pilgrim.name}`)}
+            {t(`مرحباً بك، ${pilgrim.name}${pilgrim.pilgrimType === "HAJJ" ? " - حاج" : ""}`, `Welcome, ${pilgrim.name}${pilgrim.pilgrimType === "HAJJ" ? " - Pilgrim" : ""}`)}
           </h1>
           <p className="mt-1 text-kiosk-sm text-white/75">
             {t(

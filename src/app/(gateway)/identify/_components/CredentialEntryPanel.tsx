@@ -25,13 +25,13 @@ const METHOD_CONFIG: Record<IdentificationMethod, MethodConfig> = {
     icon: FileKey2,
     titleAr: "التحقق برقم التأشيرة",
     titleEn: "Verify with visa number",
-    instructionAr: "أدخل رقم التأشيرة كما يظهر في مستند التأشيرة",
-    instructionEn: "Enter the visa number shown on your visa document",
+    instructionAr: "أدخل رقم التأشيرة المكوّن من 10 أرقام فقط دون حروف أو رموز",
+    instructionEn: "Enter the 10-digit visa number using numbers only",
     actionAr: "استخدام رقم تأشيرة تجريبي",
     actionEn: "Use demo visa number",
     placeholderAr: "رقم التأشيرة",
     placeholderEn: "Visa number",
-    demoValue: "VISA-2026-778812",
+    demoValue: "1234567890",
   },
   QR_CODE: {
     icon: QrCode,
@@ -62,12 +62,23 @@ const METHOD_CONFIG: Record<IdentificationMethod, MethodConfig> = {
 export function CredentialEntryPanel({ method, status, onSubmit }: { method: IdentificationMethod; status: IdentificationStatus; onSubmit: (value: string) => void }) {
   const { t } = useLanguage();
   const [value, setValue] = useState("");
+  const [validationError, setValidationError] = useState("");
   const config = METHOD_CONFIG[method];
   const Icon = config.icon;
   const isProcessing = status === "processing";
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    if (method === "VISA") {
+      if (/[^0-9]/.test(value)) {
+        setValidationError(t("رقم التأشيرة يقبل الأرقام فقط، ولا يمكن إدخال حروف أو رموز.", "Visa number accepts digits only; letters and symbols are not allowed."));
+        return;
+      }
+      if (value.length !== 10) {
+        setValidationError(t("رقم التأشيرة يجب أن يتكون من 10 أرقام.", "Visa number must contain exactly 10 digits."));
+        return;
+      }
+    }
     if (value.trim() && !isProcessing) onSubmit(value.trim());
   };
 
@@ -98,9 +109,10 @@ export function CredentialEntryPanel({ method, status, onSubmit }: { method: Ide
           </button>}
           {method !== "VISA" && <div className="flex items-center gap-3 text-white/40"><span className="h-px flex-1 bg-white/15" /><span className="text-xs">{t("إدخال تجريبي بديل", "Demo fallback")}</span><span className="h-px flex-1 bg-white/15" /></div>}
           <div className="flex gap-2">
-            <input value={value} onChange={(event) => setValue(event.target.value)} disabled={isProcessing} placeholder={t(config.placeholderAr, config.placeholderEn)} dir="ltr" className="h-touch min-w-0 flex-1 rounded-2xl border border-white/20 bg-white/10 px-4 text-center text-kiosk-xs text-white outline-none placeholder:text-white/35 focus:border-gold-400" />
+            <input value={value} onChange={(event) => { setValue(event.target.value); setValidationError(""); }} inputMode={method === "VISA" ? "numeric" : undefined} maxLength={method === "VISA" ? 10 : undefined} disabled={isProcessing} placeholder={method === "VISA" ? t("أدخل 10 أرقام", "Enter 10 digits") : t(config.placeholderAr, config.placeholderEn)} dir="ltr" aria-invalid={Boolean(validationError)} className={`h-touch min-w-0 flex-1 rounded-2xl border bg-white/10 px-4 text-center text-kiosk-xs text-white outline-none placeholder:text-white/35 focus:border-gold-400 ${validationError ? "border-emergency" : "border-white/20"}`} />
             <Button type="submit" disabled={!value.trim() || isProcessing} className="bg-white text-brand-900 hover:bg-cream-100">{t("تحقق", "Verify")}</Button>
           </div>
+          {method === "VISA" && <p className={`text-sm font-semibold ${validationError ? "text-red-300" : "text-white/60"}`}>{validationError || t(`${value.length}/10 أرقام`, `${value.length}/10 digits`)}</p>}
         </form>
       </div>
     </div>
