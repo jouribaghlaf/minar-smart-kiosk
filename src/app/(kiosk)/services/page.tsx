@@ -1,6 +1,7 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { ServiceGrid } from "../../(gateway)/_components/ServiceGrid";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useSession } from "@/hooks/useSession";
@@ -27,6 +28,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      <Link href={mode === "authenticated" ? "/dashboard" : "/"} className="flex h-touch w-fit items-center gap-2 rounded-2xl border-2 border-brand-700 bg-white px-5 font-bold text-brand-700 hover:bg-brand-50"><ArrowRight className="h-5 w-5" />{t("الرجوع للصفحة الرئيسية", "Back to home")}</Link>
       <ServiceGrid />
     </div>
   );

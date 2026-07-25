@@ -1,6 +1,6 @@
 "use client";
 
-import { Stethoscope, Ambulance, Droplets, Pill } from "lucide-react";
+import { Ambulance, Droplets, Pill } from "lucide-react";
 import { QuickActionTile } from "@/components/common/QuickActionTile";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -21,13 +21,7 @@ export function QuickHealthServicesGrid() {
   return (
     <div className="rounded-card border border-cream-200 bg-white p-5 shadow-card">
       <h2 className="text-kiosk-sm font-bold text-ink-900">{t("خدمات صحية سريعة", "Quick Health Services")}</h2>
-      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        <QuickActionTile
-          icon={Stethoscope}
-          label={t("استشارة طبية", "Medical Consultation")}
-          disabled
-          disabledLabel={t("قريباً", "Coming soon")}
-        />
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <QuickActionTile icon={Ambulance} label={t("الإسعاف", "Ambulance")} onClick={scrollToEmergency} />
         <QuickActionTile
           icon={Droplets}
