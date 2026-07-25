@@ -51,8 +51,10 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
-      <WelcomeHero pilgrim={pilgrim} />
-      <PostLoginChoices />
+      <section className="flex min-h-[calc(100dvh-7rem)] flex-col gap-6">
+        <WelcomeHero pilgrim={pilgrim} />
+        <PostLoginChoices />
+      </section>
       <ProfileSummaryGrid pilgrim={pilgrim} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px] lg:items-start">
