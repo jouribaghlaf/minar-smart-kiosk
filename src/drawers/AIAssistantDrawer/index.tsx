@@ -1,106 +1,146 @@
 "use client";
 
-import { useState } from "react";
-import { Bot, CheckCircle2, ChevronLeft, FileWarning, MapPinned, PackageSearch, Sparkles, TicketCheck } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Bot, CheckCircle2, FileWarning, MapPinned, Mic, PackageSearch, Send, Sparkles, TicketCheck } from "lucide-react";
 import { Drawer } from "@/components/common/Drawer";
 import { useDrawer } from "@/hooks/useDrawer";
 import { useLanguage } from "@/hooks/useLanguage";
+import { ChatBubble } from "./_components/ChatBubble";
+import type { ChatMessage } from "@/types/chat";
 
-const scenarios = [
+const examples = [
   {
     id: "lost-item", icon: PackageSearch,
     titleAr: "الإبلاغ عن غرض مفقود", titleEn: "Report a lost item",
     requestAr: "أبغى أبلغ عن شنطة مفقودة", requestEn: "I want to report a lost bag",
-    stepsAr: ["يسأل عن مكان ووقت الفقد", "يجمع وصف الغرض وصورته", "يتحقق من بيانات التواصل", "ينشئ البلاغ ويعرض رقمه"],
-    stepsEn: ["Asks where and when it was lost", "Collects a description and photo", "Validates contact details", "Creates the report and shows its number"],
-    resultAr: "تم إنشاء البلاغ بنجاح — رقم البلاغ: MNR-2841", resultEn: "Report created successfully — Reference: MNR-2841",
+    answerAr: "سأساعدك في إنشاء البلاغ. سأطلب منك مكان ووقت الفقد، وصف الشنطة، صورة إن وجدت، وبيانات التواصل. بعد التحقق سأرسل البلاغ وأعرض لك رقمه المرجعي.",
+    answerEn: "I’ll help create the report. I’ll ask for the loss location and time, a bag description, an optional photo, and contact details. After validation, I’ll submit it and show the reference number.",
   },
   {
     id: "navigation", icon: MapPinned,
-    titleAr: "الوصول إلى الفندق أو المخيم", titleEn: "Navigate to hotel or camp",
+    titleAr: "الوصول إلى الفندق", titleEn: "Navigate to the hotel",
     requestAr: "وين فندقي؟", requestEn: "Where is my hotel?",
-    stepsAr: ["يسترجع بيانات الفندق", "يحدد موقع المستخدم", "ينشئ أفضل مسار", "يعرض المسافة ووقت الوصول"],
-    stepsEn: ["Retrieves hotel details", "Detects the user's location", "Creates the best route", "Shows distance and arrival time"],
-    resultAr: "فندقك رافلز مكة — يبعد 1.2 كم، ووقت الوصول المتوقع 8 دقائق", resultEn: "Your hotel is Raffles Makkah — 1.2 km away, with an estimated travel time of 8 minutes",
+    answerAr: "سأسترجع بيانات فندقك، أحدد موقعك، ثم أنشئ أفضل مسار وأعرض المسافة ووقت الوصول مع خيار بدء الملاحة.",
+    answerEn: "I’ll retrieve your hotel details, detect your location, create the best route, and show the distance and arrival time with an option to start navigation.",
   },
   {
     id: "complaint", icon: FileWarning,
     titleAr: "تقديم شكوى", titleEn: "Submit a complaint",
     requestAr: "أبغى أقدم شكوى", requestEn: "I want to submit a complaint",
-    stepsAr: ["يحدد تصنيف الشكوى", "يجمع التفاصيل والمرفقات", "يطلب التأكيد قبل الإرسال", "يرسل الشكوى ويعرض رقمها"],
-    stepsEn: ["Identifies the complaint category", "Collects details and attachments", "Requests confirmation before submission", "Submits and shows the reference"],
-    resultAr: "تم إرسال الشكوى — الرقم المرجعي: CMP-7316", resultEn: "Complaint submitted — Reference: CMP-7316",
+    answerAr: "سأحدد معك تصنيف الشكوى، وأجمع التفاصيل والمرفقات، ثم أعرض ملخصًا للتأكيد قبل الإرسال وأعطيك الرقم المرجعي.",
+    answerEn: "I’ll identify the complaint category, collect details and attachments, show a summary for confirmation, then provide the reference number.",
   },
   {
     id: "tracking", icon: TicketCheck,
-    titleAr: "متابعة طلب أو بلاغ", titleEn: "Track a request or report",
+    titleAr: "متابعة بلاغ", titleEn: "Track a report",
     requestAr: "أبغى أتابع بلاغي", requestEn: "I want to track my report",
-    stepsAr: ["يطلب الرقم المرجعي", "يتحقق من بيانات الطلب", "يجلب آخر تحديث", "يعرض الحالة والخطوة القادمة"],
-    stepsEn: ["Requests the reference number", "Validates the request details", "Retrieves the latest update", "Shows status and the next step"],
-    resultAr: "حالة البلاغ: قيد المعالجة — تم تحويله إلى الفريق المختص", resultEn: "Report status: In progress — assigned to the responsible team",
+    answerAr: "سأطلب الرقم المرجعي للبلاغ، ثم أعرض حالته وآخر تحديث والخطوة القادمة.",
+    answerEn: "I’ll request the report reference, then show its status, latest update, and next step.",
   },
 ];
+
+function createMessage(sender: ChatMessage["sender"], text: string): ChatMessage {
+  return { id: `${Date.now()}-${Math.random()}`, sender, text, createdAt: new Date().toISOString() };
+}
 
 export function AIAssistantDrawer() {
   const { activeDrawer, closeDrawer } = useDrawer();
   const { t } = useLanguage();
-  const [selectedId, setSelectedId] = useState(scenarios[0]!.id);
-  const selected = scenarios.find((scenario) => scenario.id === selectedId) ?? scenarios[0]!;
-  const Icon = selected.icon;
+  const [value, setValue] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isOpen = activeDrawer === "ai-assistant";
+
+  useEffect(() => {
+    if (!isOpen || messages.length) return;
+    setMessages([
+      createMessage("ASSISTANT", t(
+        "مرحبًا بك 👋\nأنا مساعد مِنار الذكي. في النسخة النهائية سأفهم طلبك، أجمع البيانات المطلوبة، وأنفّذ الخدمة لك داخل المحادثة.",
+        "Welcome 👋\nI’m Minar AI Assistant. In the final version, I’ll understand your request, collect the required details, and complete the service within this conversation."
+      )),
+    ]);
+  }, [isOpen, messages.length, t]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages]);
+
+  const sendDemo = (text: string, preparedAnswer?: string) => {
+    if (!text.trim()) return;
+    const response = preparedAnswer ?? t(
+      "فهمت طلبك. في النسخة النهائية سأحدد الخدمة المناسبة، وأسألك عن البيانات الناقصة خطوة بخطوة، ثم أطلب تأكيدك وأنفّذها وأعرض النتيجة هنا.\n\nهذا الرد توضيحي حاليًا، وسيُفعّل التنفيذ الفعلي بعد ربط المساعد بمحرك الذكاء الاصطناعي وأنظمة الخدمات.",
+      "I understand your request. In the final version, I’ll select the right service, collect missing details step by step, ask for confirmation, complete it, and show the result here.\n\nThis is currently a demonstration response. Live execution will be enabled after connecting the assistant to the AI engine and service systems."
+    );
+    setMessages((current) => [...current, createMessage("USER", text), createMessage("ASSISTANT", response)]);
+  };
+
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    sendDemo(value);
+    setValue("");
+  };
 
   return (
-    <Drawer isOpen={activeDrawer === "ai-assistant"} onClose={closeDrawer} widthClassName="max-w-4xl"
-      title={t("مساعد مِنار الذكي", "Minar AI Assistant")} icon={<Sparkles className="h-6 w-6" aria-hidden="true" />}>
-      <div className="space-y-6">
-        <section className="overflow-hidden rounded-[2rem] bg-brand-900 p-6 text-white sm:p-8">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-            <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-gold-500 text-brand-900"><Bot className="h-11 w-11" /></span>
-            <div>
-              <span className="mb-2 inline-flex rounded-full bg-white/10 px-4 py-1 text-sm font-bold text-gold-300">{t("رؤية مستقبلية مدعومة بالذكاء الاصطناعي", "AI-powered future vision")}</span>
-              <h3 className="text-kiosk-xl font-bold">{t("ينفّذ الخدمة عنك، وليس مجرد إجابة على الأسئلة", "Completes services for you, beyond answering questions")}</h3>
-              <p className="mt-3 max-w-2xl text-lg leading-relaxed text-white/75">{t("سيجمع مساعد مِنار البيانات المطلوبة خطوة بخطوة، ويتحقق منها، ثم ينفّذ الخدمة ويعرض نتيجتها داخل المحادثة.", "Minar will collect the required details step by step, validate them, complete the service, and show the result in the conversation.")}</p>
-            </div>
-          </div>
-        </section>
+    <Drawer
+      isOpen={isOpen}
+      onClose={closeDrawer}
+      widthClassName="max-w-2xl"
+      title={t("مساعد مِنار الذكي", "Minar AI Assistant")}
+      icon={<Sparkles className="h-6 w-6" aria-hidden="true" />}
+      footer={
+        <form onSubmit={submit} className="flex items-center gap-2">
+          <button type="button" aria-label={t("إدخال صوتي تجريبي", "Demo voice input")}
+            onClick={() => sendDemo(t("أرشدني إلى فندقي", "Guide me to my hotel"), t(examples[1]!.answerAr, examples[1]!.answerEn))}
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 transition hover:bg-brand-200">
+            <Mic className="h-6 w-6" />
+          </button>
+          <input value={value} onChange={(event) => setValue(event.target.value)}
+            placeholder={t("اكتب طلبك هنا...", "Type your request here...")}
+            className="h-14 min-w-0 flex-1 rounded-2xl border border-cream-300 bg-white px-5 text-lg text-ink-900 placeholder:text-ink-400 focus:border-brand-600 focus:outline-none" />
+          <button type="submit" disabled={!value.trim()} aria-label={t("إرسال", "Send")}
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-brand-700 text-white transition hover:bg-brand-800 disabled:opacity-40">
+            <Send className="h-6 w-6 rtl:-scale-x-100" />
+          </button>
+        </form>
+      }
+    >
+      <div className="flex min-h-full flex-col gap-5">
+        <div className="rounded-2xl border border-gold-300 bg-gold-50 px-5 py-4 text-sm leading-relaxed text-ink-700">
+          <strong className="text-brand-900">{t("ملاحظة: ", "Note: ")}</strong>
+          {t(
+            "هذه تجربة توضيحية لشكل المساعد. مستقبلًا سيجمع البيانات وينفّذ خدمات مِنار كاملة من المحادثة. الربط الفعلي بالذكاء الاصطناعي وأنظمة الخدمات سيكون في مرحلة التطوير القادمة.",
+            "This is a visual demonstration of the assistant. In the future, it will collect details and complete Minar services within the chat. Live AI and service-system integration will be added in the next development phase."
+          )}
+        </div>
 
-        <div className="rounded-2xl border border-gold-300 bg-gold-50 px-5 py-4 text-base leading-relaxed text-ink-700">
-          <strong className="text-brand-900">{t("ملاحظة حول النموذج التجريبي: ", "Prototype note: ")}</strong>
-          {t("تعرض هذه الشاشة تصورًا توضيحيًا لطريقة عمل المساعد. سيتم تفعيل المحادثة والتنفيذ الفعلي بعد ربط المنصة بمحرك الذكاء الاصطناعي وأنظمة الخدمات.", "This screen demonstrates how the assistant will work. Live conversation and execution will be enabled after connecting the platform to the AI engine and service systems.")}
+        <div ref={scrollRef} className="flex max-h-[42vh] min-h-64 flex-col gap-4 overflow-y-auto rounded-2xl border border-cream-200 bg-white p-4 sm:p-5">
+          {messages.map((message) => <ChatBubble key={message.id} message={message} />)}
         </div>
 
         <section>
-          <h3 className="text-kiosk-lg font-bold text-brand-900">{t("ماذا يستطيع مساعد مِنار أن يفعل؟", "What will Minar Assistant do?")}</h3>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {[t("فهم طلب المستخدم بلغته", "Understand the user's request in their language"), t("اختيار الخدمة المناسبة تلقائيًا", "Select the right service automatically"), t("جمع البيانات الناقصة والتحقق منها", "Collect and validate missing information"), t("تنفيذ الطلب وعرض الرقم المرجعي", "Complete the request and show its reference")].map((item) => (
-              <div key={item} className="flex items-center gap-3 rounded-2xl bg-cream-100 p-4 text-base font-semibold text-ink-800"><CheckCircle2 className="h-6 w-6 shrink-0 text-brand-600" />{item}</div>
-            ))}
+          <div className="mb-3 flex items-center gap-2">
+            <Bot className="h-5 w-5 text-brand-700" />
+            <h3 className="font-bold text-brand-900">{t("أمثلة يمكنك تجربتها", "Examples you can try")}</h3>
           </div>
-        </section>
-
-        <section>
-          <h3 className="text-kiosk-lg font-bold text-brand-900">{t("شاهد كيف سينفّذ طلبك", "See how a request will be completed")}</h3>
-          <p className="mt-1 text-ink-600">{t("اختر مثالًا لعرض رحلة التنفيذ التجريبية.", "Choose an example to preview the service journey.")}</p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {scenarios.map((scenario) => {
-              const ScenarioIcon = scenario.icon;
-              const active = scenario.id === selected.id;
-              return <button key={scenario.id} type="button" onClick={() => setSelectedId(scenario.id)}
-                className={`flex min-h-20 items-center gap-4 rounded-2xl border-2 p-4 text-start transition ${active ? "border-gold-500 bg-gold-50 text-brand-900" : "border-cream-200 bg-white text-ink-700 hover:border-brand-300"}`}>
-                <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${active ? "bg-gold-500" : "bg-cream-100"}`}><ScenarioIcon className="h-6 w-6" /></span>
-                <strong className="flex-1 text-lg">{t(scenario.titleAr, scenario.titleEn)}</strong><ChevronLeft className="h-5 w-5 shrink-0" />
-              </button>;
+          <div className="grid gap-3 sm:grid-cols-2">
+            {examples.map((example) => {
+              const Icon = example.icon;
+              return (
+                <button key={example.id} type="button"
+                  onClick={() => sendDemo(t(example.requestAr, example.requestEn), t(example.answerAr, example.answerEn))}
+                  className="flex min-h-16 items-center gap-3 rounded-2xl border border-cream-300 bg-cream-50 p-3 text-start text-brand-900 transition hover:border-gold-500 hover:bg-gold-50">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-900 text-gold-400"><Icon className="h-5 w-5" /></span>
+                  <span><strong className="block">{t(example.titleAr, example.titleEn)}</strong><span className="mt-0.5 block text-xs text-ink-500">«{t(example.requestAr, example.requestEn)}»</span></span>
+                </button>
+              );
             })}
           </div>
         </section>
 
-        <section className="rounded-[2rem] border border-cream-200 bg-cream-50 p-5 sm:p-7">
-          <div className="flex items-center gap-3"><span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-900 text-gold-400"><Icon className="h-6 w-6" /></span><h3 className="text-kiosk-lg font-bold text-brand-900">{t(selected.titleAr, selected.titleEn)}</h3></div>
-          <div className="mt-5 rounded-2xl bg-white p-4 shadow-sm"><span className="text-sm font-bold text-ink-500">{t("مثال لطلب المستخدم", "Example user request")}</span><p className="mt-1 text-xl font-bold text-brand-900">«{t(selected.requestAr, selected.requestEn)}»</p></div>
-          <ol className="mt-5 grid gap-3 sm:grid-cols-2">
-            {selected.stepsAr.map((step, index) => <li key={step} className="flex items-start gap-3 rounded-2xl bg-white p-4"><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-700 font-bold text-white">{index + 1}</span><span className="pt-1 font-semibold text-ink-700">{t(step, selected.stepsEn[index]!)}</span></li>)}
-          </ol>
-          <div className="mt-5 flex items-start gap-3 rounded-2xl bg-brand-900 p-5 text-white"><CheckCircle2 className="mt-0.5 h-7 w-7 shrink-0 text-gold-400" /><div><strong className="block text-gold-300">{t("النتيجة المتوقعة", "Expected result")}</strong><p className="mt-1 text-lg">{t(selected.resultAr, selected.resultEn)}</p></div></div>
-        </section>
+        <div className="flex items-start gap-3 rounded-2xl bg-brand-900 p-4 text-white">
+          <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-gold-400" />
+          <p className="text-sm leading-relaxed">{t("الهدف النهائي: أي خدمة موجودة في الخدمة الذاتية سيتمكن المساعد من تنفيذها أيضًا داخل المحادثة.", "Final goal: every self-service feature will also be executable by the assistant inside the conversation.")}</p>
+        </div>
       </div>
     </Drawer>
   );
